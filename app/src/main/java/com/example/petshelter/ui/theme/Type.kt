@@ -2,9 +2,11 @@ package com.example.petshelter.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.petshelter.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -25,4 +27,12 @@ val Typography = Typography(
         fontSize = 12.sp
     )
     */
+
+
+)
+val mulishFont = FontFamily(
+    Font(R.font.mulish_regular, weight = FontWeight.W400),
+    Font(R.font.mulish_medium, weight = FontWeight.W500),
+    Font(R.font.mulish_bold, weight = FontWeight.W600),
+    Font(R.font.mulish_extrabold, weight = FontWeight.W700)
 )

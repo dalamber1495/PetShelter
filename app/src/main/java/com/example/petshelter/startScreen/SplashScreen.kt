@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
 import com.example.petshelter.navigation.routeObject.AppScreens
@@ -21,7 +22,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    navController: NavController
+    navController: NavController,
+    startingGraph: String
 ) {
     val scale = remember {
         androidx.compose.animation.core.Animatable(0f)
@@ -37,7 +39,7 @@ fun SplashScreen(
                 }
             ))
         delay(2000L)
-        navController.navigate(AppScreens.MainAppScreen.route)
+        navController.navigate(startingGraph)
     }
 
     Surface(

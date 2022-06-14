@@ -11,6 +11,8 @@ const val popRouteName = "popRoute"
 const val loggedUserGraph = "loggedGraph"
 
 const val splashScreen = "splashScreen"
+const val authSignUpRoute = "authScreen"
+const val forgetPasswordRoute = "forgetPasswordScreen"
 
 
 
@@ -24,10 +26,16 @@ sealed class AppScreens(
     val popTargetRoute: String = ""
 ) {
 
+
     object SplashScreen:AppScreens(
         splashScreen
     )
-
+    
+    object AuthSignUp: AppScreens(
+        authSignUpRoute,
+        NavOptions.Builder().setPopUpTo(0, false).build()
+    )
+    object ForgetPass :AppScreens(forgetPasswordRoute)
     object LoginPasswordSignUp: AppScreens(
         loginPasswordSignUpRoute,
     )
@@ -44,4 +52,5 @@ sealed class AppScreens(
     )
 
     object PopBackStack: AppScreens(popRouteName)
+
 }

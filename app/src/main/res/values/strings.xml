@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Pet shelter</string>
     <string name="webclient_id">369649585976-267qvgrolfncabjlk09q73i9rpveeqrp.apps.googleusercontent.com</string>
+    <string name="signInWithout">sign in without</string>
+    <string name="signWithoutBtn">Войти позже</string>
+    <string name="forgetPassword">Забыли пароль?</string>
+    <string name="reset_pass_topBar">Сброс пароля</string>
+    <string name="forget_pass_text">Для сброса пароля введите Email, с которым вы регистрировались</string>
 </resources>
