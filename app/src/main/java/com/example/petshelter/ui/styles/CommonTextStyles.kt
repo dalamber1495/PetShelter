@@ -17,14 +17,14 @@ val authTabsTextStyle = TextStyle(
 )
 val mainTabsSelectedTextStyle = TextStyle(
     color = Color.White,
-    fontSize = 10.sp,
+    fontSize = 12.sp,
     fontWeight = FontWeight.W800,
     fontStyle = FontStyle.Normal,
     fontFamily = mulishFont
 )
 val mainTabsUnselectedTextStyle = TextStyle(
     color = Color.White,
-    fontSize = 10.sp,
+    fontSize = 12.sp,
     fontWeight = FontWeight.W400,
     fontStyle = FontStyle.Normal,
     fontFamily = mulishFont

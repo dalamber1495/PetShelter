@@ -148,14 +148,18 @@ fun AuthTabsContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
-                        FormField(placeHolder = "Имя", {})
-                        FormField(placeHolder = "Email", {})
-                        FormField(placeHolder = "Пароль", {})
-                        FormField(placeHolder = "Повторите пароль", {})
+                        Column {
+                            FormField(placeHolder = "Имя", {})
+                            Spacer(modifier = Modifier.height(32.dp))
+                            FormField(placeHolder = "Email", {})
+                            Spacer(modifier = Modifier.height(32.dp))
+                            FormField(placeHolder = "Пароль", {})
+                            Spacer(modifier = Modifier.height(32.dp))
+                            FormField(placeHolder = "Повторите пароль", {})
+                        }
                         PetShelterBtn(modifier = Modifier
                             .wrapContentWidth()
-                            .height(60.dp)
-                            .shadow(elevation = 8.dp),
+                            .height(60.dp),
                             text = "Зарегистрироваться",
                             image = R.drawable.ic_lpet_btn,
                             clickCallback = {})

@@ -39,6 +39,8 @@ fun MainPageBottomBar(
     ) {
         items.forEach { item ->
             BottomNavigationItem(
+                modifier = Modifier
+                    .then(Modifier.weight(if (item == BottomBarItem.CreateAnnouncementTabItem) 1.25f else 1f)),
                 icon = {
                     when (currentRoute == item.route) {
                         true -> Icon(
