@@ -2,6 +2,9 @@ package com.example.petshelter.authScreens.main.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
@@ -10,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.eql.consts.ui.colors.petShelterBlack
@@ -20,6 +25,7 @@ import com.example.petshelter.authScreens.common.AuthTabItem
 import com.example.petshelter.authScreens.main.consts.joinTextStyle
 import com.example.petshelter.authScreens.main.consts.tabTextStyle
 import com.example.petshelter.navigation.routeObject.AppScreens
+import com.example.petshelter.ui.theme.Shapes
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -119,8 +125,7 @@ fun AuthTabsContent(
                         PetShelterBtn(
                             modifier = Modifier
                                 .width(147.dp)
-                                .height(60.dp)
-                                .shadow(elevation = 8.dp),
+                                .height(60.dp),
                             image = R.drawable.ic_lpet_btn,
                             text = "Войти",
                             clickCallback = {})

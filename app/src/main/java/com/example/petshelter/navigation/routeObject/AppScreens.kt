@@ -28,12 +28,13 @@ sealed class AppScreens(
 
 
     object SplashScreen:AppScreens(
-        splashScreen
+        splashScreen,
+        NavOptions.Builder().setPopUpTo(0, false).build()
     )
     
     object AuthSignUp: AppScreens(
-        authSignUpRoute,
-        NavOptions.Builder().setPopUpTo(0, false).build()
+        route = authSignUpRoute,
+        options = NavOptions.Builder().setPopUpTo(0, false).build()
     )
     object ForgetPass :AppScreens(forgetPasswordRoute)
     object LoginPasswordSignUp: AppScreens(

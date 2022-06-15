@@ -72,8 +72,7 @@ fun ForgetPasswordScreen(
                 Spacer(modifier = Modifier.height(40.dp))
                 PetShelterBtn(modifier = Modifier
                     .wrapContentWidth()
-                    .height(60.dp)
-                    .shadow(elevation = 8.dp),
+                    .height(60.dp),
                     "Продолжить",
                     clickCallback = {})
             }

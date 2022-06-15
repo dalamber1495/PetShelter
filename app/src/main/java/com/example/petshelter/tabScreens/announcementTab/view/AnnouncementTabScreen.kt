@@ -39,7 +39,9 @@ fun AnnouncementTabScreen(
         TabRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp),
+                .height(80.dp)
+                .shadow(elevation = 8.dp)
+            ,
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     Modifier
@@ -53,7 +55,7 @@ fun AnnouncementTabScreen(
             divider = {
                 TabRowDefaults.Divider(
                     color = Color.White,
-                    modifier = Modifier.shadow(elevation = 8.dp),
+                    modifier = Modifier,
                     thickness = 2.dp
                 )
             }

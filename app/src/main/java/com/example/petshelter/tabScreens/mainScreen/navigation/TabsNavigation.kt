@@ -16,7 +16,6 @@ import com.example.petshelter.tabScreens.profileTab.viewModel.ProfileTabViewMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 
-@OptIn(ExperimentalPagerApi::class)
 @ExperimentalFoundationApi
 @Composable
 fun TabsNavigation(navController: NavHostController) {

@@ -25,7 +25,8 @@ fun PetShelterBtn(
     text:String,
     image:Int? = null,
     clickCallback:()->Unit){
-    Button(modifier = modifier,
+    Button(modifier = modifier
+        .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp)),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = petShelterBlue

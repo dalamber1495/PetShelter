@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
+import androidx.navigation.NavOptions
 import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
 import com.example.petshelter.navigation.routeObject.AppScreens
@@ -39,7 +40,7 @@ fun SplashScreen(
                 }
             ))
         delay(2000L)
-        navController.navigate(startingGraph)
+        navController.navigate(startingGraph, NavOptions.Builder().setPopUpTo(0, false).build())
     }
 
     Surface(
