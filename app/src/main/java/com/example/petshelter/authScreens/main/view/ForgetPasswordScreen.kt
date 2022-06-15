@@ -1,10 +1,8 @@
 package com.example.petshelter.authScreens.main.view
 
-import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +17,6 @@ import com.eql.consts.ui.colors.petShelterWhite
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.FormField
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
-import com.example.petshelter.authScreens.main.components.petShelterBtnPreview
 import com.example.petshelter.authScreens.main.consts.*
 import com.example.petshelter.ui.theme.PetShelterTheme
 

@@ -12,8 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.navigation.graphs.authGraph
+import com.example.petshelter.navigation.graphs.mainFlowGraph
 import com.example.petshelter.navigation.routeObject.AppScreens
-import com.example.petshelter.navigation.routeObject.loggedUserGraph
 import com.example.petshelter.navigation.routeObject.popRouteName
 import com.example.petshelter.ui.notLoggedUserGraph
 import com.example.petshelter.ui.theme.PetShelterTheme
@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                 startDestination = AppScreens.SplashScreen.route){
 
                 authGraph(navigationController)
+                mainFlowGraph(navigationController)
 
                 composable(AppScreens.SplashScreen.route){
                     SplashScreen(navController = navigationController,startingGraph = startingGraph)

@@ -26,6 +26,13 @@ val tabTextStyle = TextStyle(
     fontStyle = FontStyle.Normal,
     fontFamily = mulishFont
 )
+val mainTabTextStyle = TextStyle(
+    color = Color.White,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.W600,
+    fontStyle = FontStyle.Normal,
+    fontFamily = mulishFont
+)
 val forgetPassTextStyle = TextStyle(
     color = petShelterBlack,
     fontSize = 16.sp,

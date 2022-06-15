@@ -34,5 +34,6 @@ val mulishFont = FontFamily(
     Font(R.font.mulish_regular, weight = FontWeight.W400),
     Font(R.font.mulish_medium, weight = FontWeight.W500),
     Font(R.font.mulish_bold, weight = FontWeight.W600),
-    Font(R.font.mulish_extrabold, weight = FontWeight.W700)
+    Font(R.font.mulish_extrabold, weight = FontWeight.W700),
+    Font(R.font.mulish_black, weight = FontWeight.W800)
 )

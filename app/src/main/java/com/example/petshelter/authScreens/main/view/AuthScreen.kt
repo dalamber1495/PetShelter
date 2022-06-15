@@ -2,14 +2,12 @@ package com.example.petshelter.authScreens.main.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,16 +18,14 @@ import com.example.petshelter.authScreens.common.AuthTabItem
 import com.example.petshelter.authScreens.main.components.AuthTabs
 import com.example.petshelter.authScreens.main.consts.joinTextStyle
 import com.example.petshelter.navigation.routeObject.AppScreens
-import com.example.petshelter.ui.styles.authTabsTextStyle
 import com.example.petshelter.ui.theme.PetShelterTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import androidx.compose.foundation.layout.R as R1
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AuthScreen(
-    forgetPassCallback:(AppScreens)->Unit
+    navigateCallback:(AppScreens)->Unit,
 ) {
 
     val tabs = listOf(
@@ -68,10 +64,10 @@ fun AuthScreen(
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
-                AuthTabs(tabs = tabs, pagerState = pagerState,    forgetPassCallback)
+                AuthTabs(tabs = tabs, pagerState = pagerState,    navigateCallback)
 
                 TextButton(modifier = Modifier.wrapContentSize(),
-                    onClick = {}) {
+                    onClick = {navigateCallback.invoke(AppScreens.MainAppScreen)}) {
                     Row {
                         Text(stringResource(R.string.signWithoutBtn), style = joinTextStyle)
                         Image(

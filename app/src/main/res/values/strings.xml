@@ -6,4 +6,7 @@
     <string name="forgetPassword">Забыли пароль?</string>
     <string name="reset_pass_topBar">Сброс пароля</string>
     <string name="forget_pass_text">Для сброса пароля введите Email, с которым вы регистрировались</string>
+    <string name="announcements_tab">Объявления</string>
+    <string name="create_announce_tab_label">Создать объявление</string>
+    <string name="profile_tab_label">Профиль</string>
 </resources>

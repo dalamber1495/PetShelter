@@ -7,10 +7,20 @@
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_pet_logo2.xml" value="0.1085" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_pet_logo_btn.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_pet_shelter2.xml" value="0.1085" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_announce_active.xml" value="0.104" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_announce_disactive.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_announcetab_active.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_announcetab_disactive.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_create_active.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_create_announce_disable.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_create_disactive.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_logo.xml" value="0.1085" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_lpet_btn.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_pet_logo.xml" value="0.1085" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_pet_shelter.xml" value="0.1085" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_profile_active.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_profile_disactive.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_profiletab_disactive.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_union.xml" value="0.1085" />
       </map>
     </option>
