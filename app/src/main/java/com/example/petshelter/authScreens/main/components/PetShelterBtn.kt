@@ -22,17 +22,23 @@ import com.example.petshelter.ui.theme.PetShelterTheme
 @Composable
 fun PetShelterBtn(
     modifier: Modifier,
-    text:String,
-    image:Int? = null,
-    clickCallback:()->Unit){
-    Button(modifier = modifier
-        .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp)),
+    text: String,
+    image: Int? = null,
+    imageAfter: Int? = null,
+    clickCallback: () -> Unit
+) {
+    Button(
+        modifier = modifier
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp)),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = petShelterBlue
-        ),        onClick = clickCallback) {
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically) {
+        ), onClick = clickCallback
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             image?.let {
                 Image(
                     modifier = Modifier.height(23.dp),
@@ -42,20 +48,33 @@ fun PetShelterBtn(
 
                 Spacer(modifier = Modifier.width(10.dp))
             }
-            Text(text,
-                style = btnTextStyle)
+            Text(
+                text,
+                style = btnTextStyle
+            )
+
+            imageAfter?.let {
+                Spacer(modifier = Modifier.width(10.dp))
+                Image(
+                    modifier = Modifier.height(23.dp),
+                    painter = painterResource(id = it),
+                    contentDescription = "logo_button",
+                )
+
+            }
         }
     }
 }
 
 @Preview
 @Composable
-fun PetShelterBtnPreview(){
+fun PetShelterBtnPreview() {
     PetShelterTheme {
-        PetShelterBtn(Modifier
-            .width(147.dp)
-            .height(60.dp)
-            .shadow(elevation = 8.dp),
+        PetShelterBtn(
+            Modifier
+                .width(147.dp)
+                .height(60.dp)
+                .shadow(elevation = 8.dp),
             "Войти",
             clickCallback = { /*TODO*/ })
 
