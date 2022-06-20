@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalInfoUiState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
+import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
 import javax.inject.Inject
@@ -13,12 +14,13 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateAnnouncementTabViewModel @Inject constructor(
     val appNavigation: AppNavigation
-):ViewModel(){
+) : ViewModel() {
 
     private val screenBusy = MutableLiveData(false)
     private val firstStepReady = MutableLiveData(false)
     private val secondStepReady = MutableLiveData(false)
     private val thirdStepReady = MutableLiveData(false)
+    private val secondStepLocateData = MutableLiveData(SecondStepLocateData())
     private val avatarUri = MutableLiveData<Uri>()
     private val errorMessage = MutableLiveData("")
 
@@ -26,6 +28,7 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         firstStep = firstStepReady,
         secondStep = secondStepReady,
         thirdStep = thirdStepReady,
+        secondStepLocateData = secondStepLocateData,
         avatarUri = avatarUri,
         screenBusy = screenBusy,
         errorMessage = errorMessage
@@ -33,7 +36,7 @@ class CreateAnnouncementTabViewModel @Inject constructor(
 
     fun defaultValuesSelect(
         firstStepFilled: Boolean = false,
-        secondStepFilled:Boolean = false,
+        secondStepFilled: Boolean = false,
 
         ) {
         screenBusy.postValue(false)
@@ -76,12 +79,21 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         }
     }
 
-    fun showPhoto(firstStepData:FirstStepAddPhotoData){
+    fun showPhoto(firstStepData: FirstStepAddPhotoData) {
         avatarUri.postValue(firstStepData.photoUri)
     }
-    fun firstStepReady(){
+
+    fun firstStepReady() {
         firstStepReady.postValue(true)
     }
+
+    fun secondStepReady(secondStepLocalData: SecondStepLocateData) {
+        secondStepReady.postValue(true)
+    }
+
+    fun markerPositionMove(): SecondStepLocateData =
+        secondStepLocateData.value!!
+
 
     private fun firstStepCallback(animalData: FirstStepAddPhotoData): Boolean {
         return false

@@ -16,6 +16,7 @@ import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalInfoUiState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
+import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.FirstStepCreateAnnouncementForm
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.SecondStepCreateAnnouncementForm
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.TopBarCreateAnnouncement
@@ -26,13 +27,17 @@ fun CreateAnnouncementTabScreen(
     uiState: FillAnimalInfoUiState,
     checkStepsState: () -> Unit,
     addPhotoCallback: (FirstStepAddPhotoData) -> Unit,
-    firstStepReadyCallback: () -> Unit
+    firstStepReadyCallback: () -> Unit,
+    secondStepReadyCallback:(SecondStepLocateData)-> Unit,
+    markerPositionCallback:()->SecondStepLocateData
+
 ) {
     val firstStep = uiState.firstStep.observeAsState(initial = false)
     val secondStep = uiState.secondStep.observeAsState(initial = false)
     val thirdStep = uiState.thirdStep.observeAsState(initial = false)
     val avatarUri = uiState.avatarUri.observeAsState()
     val screenIsBusy = uiState.screenBusy.observeAsState(initial = false)
+    val secondStepLocateData = uiState.secondStepLocateData.observeAsState(initial = SecondStepLocateData())
 
 //    LaunchedEffect("CheckStepsState") {
 //        checkStepsState.invoke()
@@ -51,7 +56,9 @@ fun CreateAnnouncementTabScreen(
             }
             firstStep.value && !secondStep.value && !thirdStep.value -> {
                 SecondStepCreateAnnouncementForm(
-
+                    secondStepLocateData = secondStepLocateData.value,
+                    markerPositionCallback = markerPositionCallback,
+                    secondStepReadyCallback = secondStepReadyCallback
                 )
             }
             firstStep.value && secondStep.value && !thirdStep.value -> {
@@ -77,11 +84,14 @@ fun CreateAnnouncementTabScreenPreview() {
                 thirdStep = MutableLiveData(false),
                 avatarUri = MutableLiveData(null),
                 screenBusy = MutableLiveData(false),
-                errorMessage = MutableLiveData("")
+                errorMessage = MutableLiveData(""),
+                secondStepLocateData = MutableLiveData(SecondStepLocateData())
             ),
             {},
             {},
-            {}
+            {},
+            {},
+            { SecondStepLocateData() }
         )
     }
 }

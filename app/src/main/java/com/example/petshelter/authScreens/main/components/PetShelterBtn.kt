@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
@@ -22,8 +23,9 @@ import com.example.petshelter.ui.theme.PetShelterTheme
 @Composable
 fun PetShelterBtn(
     modifier: Modifier,
-    text: String,
+    text: String? = null,
     image: Int? = null,
+    imageSize:Dp = 23.dp,
     imageAfter: Int? = null,
     clickCallback: () -> Unit
 ) {
@@ -41,22 +43,24 @@ fun PetShelterBtn(
         ) {
             image?.let {
                 Image(
-                    modifier = Modifier.height(23.dp),
+                    modifier = Modifier.height(imageSize),
                     painter = painterResource(id = it),
                     contentDescription = "logo_button",
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
             }
-            Text(
-                text,
-                style = btnTextStyle
-            )
+            text?.let {
+                Text(
+                    text,
+                    style = btnTextStyle
+                )
+            }
 
             imageAfter?.let {
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
-                    modifier = Modifier.height(23.dp),
+                    modifier = Modifier.height(imageSize),
                     painter = painterResource(id = it),
                     contentDescription = "logo_button",
                 )

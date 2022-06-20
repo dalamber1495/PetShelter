@@ -187,7 +187,7 @@ fun AnimalPhoto(
                 .height(56.dp),
             text = "Указать адрес",
             imageAfter = R.drawable.ic_baseline_arrow_forward_ios_24_btn,
-            clickCallback = { firstStepReadyCallback }
+            clickCallback = {firstStepReadyCallback.invoke()}
         )
         Spacer(modifier = Modifier.height(24.dp))
 

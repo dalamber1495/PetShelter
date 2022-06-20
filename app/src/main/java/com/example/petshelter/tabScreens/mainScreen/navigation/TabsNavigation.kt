@@ -31,7 +31,9 @@ fun TabsNavigation(navController: NavHostController) {
             CreateAnnouncementTabScreen(
                 viewModel.uiState,
                 {},viewModel::showPhoto,
-            viewModel::firstStepReady)
+            viewModel::firstStepReady,
+            viewModel::secondStepReady,
+            viewModel::markerPositionMove)
         }
         composable(route = MainScreenTabRoute.ProfileTab.name) {
             val viewModel = hiltViewModel<ProfileTabViewModel>()

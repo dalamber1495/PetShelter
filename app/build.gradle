@@ -3,7 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
-
     id 'dagger.hilt.android.plugin'
 }
 apply plugin: 'kotlin-android'
@@ -17,7 +16,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
+        manifestPlaceholders = [MAPS_API_KEY: "AIzaSyA5SIb9KoiPW-bqjayWCwHgScWedjsbPB8"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -74,6 +73,7 @@ dependencies {
 
     //Google Maps
     implementation 'com.google.maps.android:maps-compose:2.2.0'
+    implementation 'com.google.maps.android:maps-ktx:3.3.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
 
