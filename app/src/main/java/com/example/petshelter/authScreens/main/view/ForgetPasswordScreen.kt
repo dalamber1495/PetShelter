@@ -69,7 +69,8 @@ fun ForgetPasswordScreen(
                 textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(40.dp))
                 FormField(modifier = Modifier.height(56.dp),
-                    placeHolder = "Email", {})
+                    placeHolder = "Email",
+                    valueCallback = {})
                 Spacer(modifier = Modifier.height(40.dp))
                 PetShelterBtn(modifier = Modifier
                     .wrapContentWidth()

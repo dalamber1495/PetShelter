@@ -47,9 +47,9 @@ import java.util.*
 fun EditProfileScreen(
     addPhotoCallback: (Uri?) -> Unit,
     uiState: ProfileTabUiState,
-    popBackStackCallback:(NavController)->Unit,
+    popBackStackCallback: (NavController) -> Unit,
     navController: NavController,
-){
+) {
     val screenIsBusy = uiState.screenBusy.observeAsState(false)
     val avatarUri = uiState.avatarUri.observeAsState(null)
     val nameAndSurname = uiState.nameAndSurname.observeAsState("Имя и фамилия")
@@ -80,7 +80,7 @@ fun EditProfileScreen(
 
         TopBarCreateAnnouncement(
             backArrowShow = true,
-            backArrowCallback = {popBackStackCallback.invoke(navController)},
+            backArrowCallback = { popBackStackCallback.invoke(navController) },
             textTopBar = "Изменение профиля"
         )
         Spacer(modifier = Modifier.height(48.dp))
@@ -92,8 +92,11 @@ fun EditProfileScreen(
         )
         Spacer(modifier = Modifier.height(40.dp))
 
-        FormField(modifier = Modifier.height(56.dp), placeHolder = nameAndSurname.value) {
-
+        FormField(
+            modifier = Modifier.height(56.dp),
+            placeHolder = nameAndSurname.value,
+            visibleIcon = true
+        ) {
         }
 
         Column(
@@ -101,9 +104,11 @@ fun EditProfileScreen(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PetShelterBtn(modifier = Modifier
-                .width(165.dp)
-                .height(56.dp), text = "Продолжить") {
+            PetShelterBtn(
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(56.dp), text = "Продолжить"
+            ) {
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -165,7 +170,10 @@ fun ChangeProfilePhoto(
             }
         }
         Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
-            Image(painter = painterResource(id = R.drawable.ic_text_button_fluid), contentDescription = "change photo icon")
+            Image(
+                painter = painterResource(id = R.drawable.ic_text_button_fluid),
+                contentDescription = "change photo icon"
+            )
         }
     }
 }

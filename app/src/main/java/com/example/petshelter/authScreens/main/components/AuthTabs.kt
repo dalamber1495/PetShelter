@@ -119,11 +119,14 @@ fun AuthTabsContent(
                         Column {
                             FormField(modifier = Modifier
                                 .height(56.dp),
-                                placeHolder = "Email", {})
+                                placeHolder = "Email",
+                                valueCallback = {})
                             Spacer(modifier = Modifier.height(32.dp))
                             FormField(modifier = Modifier
                                 .height(56.dp),
-                                placeHolder = "Пароль", {})
+                                placeHolder = "Пароль",
+                                visibleIcon = true,
+                                valueCallback = {})
                         }
 
                         PetShelterBtn(
@@ -155,19 +158,26 @@ fun AuthTabsContent(
                         Column {
                             FormField(modifier = Modifier
                                 .height(56.dp),
-                                placeHolder = "Имя", {})
+                                placeHolder = "Имя",
+                                valueCallback = {})
                             Spacer(modifier = Modifier.height(32.dp))
                             FormField(modifier = Modifier
                                 .height(56.dp),
-                                placeHolder = "Email", {})
+                                placeHolder = "Email",
+                                valueCallback = {})
                             Spacer(modifier = Modifier.height(32.dp))
                             FormField(modifier = Modifier
                                 .height(56.dp),
-                                placeHolder = "Пароль", {})
+                                placeHolder = "Пароль",
+                                visibleIcon = true,
+                                valueCallback = {})
                             Spacer(modifier = Modifier.height(32.dp))
                             FormField(modifier = Modifier
                                 .height(56.dp),
-                                placeHolder = "Повторите пароль", {})
+                                placeHolder = "Повторите пароль",
+                                visibleIcon = true,
+                                valueCallback
+                                = {})
                         }
                         PetShelterBtn(modifier = Modifier
                             .wrapContentWidth()

@@ -38,11 +38,11 @@ fun ChangePasswordScreen(
             textTopBar = "Изменение пароля"
         )
         Spacer(modifier = Modifier.height(40.dp))
-        FormField(modifier = Modifier.height(56.dp), placeHolder = "Старый пароль") {}
+        FormField(modifier = Modifier.height(56.dp), placeHolder = "Старый пароль", visibleIcon = true) {}
         Spacer(modifier = Modifier.height(32.dp))
-        FormField(modifier = Modifier.height(56.dp), placeHolder = "Новый пароль") {}
+        FormField(modifier = Modifier.height(56.dp), placeHolder = "Новый пароль",visibleIcon = true) {}
         Spacer(modifier = Modifier.height(32.dp))
-        FormField(modifier = Modifier.height(56.dp), placeHolder = "Повторите пароль") {}
+        FormField(modifier = Modifier.height(56.dp), placeHolder = "Повторите пароль",visibleIcon = true) {}
 
         }
 }
