@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_cat_card_unselected.xml" value="0.1015" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_dog_card_selected.xml" value="0.1015" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1085" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_other_card_selected.xml" value="0.1015" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_pet_logo2.xml" value="0.1085" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_pet_logo_btn.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable-v24/ic_pet_shelter2.xml" value="0.1085" />
@@ -12,11 +15,15 @@
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_announcetab_active.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_announcetab_disactive.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_baseline_arrow_forward_ios_24.xml" value="0.1015" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_cat_card.xml" value="0.1015" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_create_active.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_create_announce_disable.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_create_disactive.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_dog_card.xml" value="0.1015" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_edit_icon.xml" value="0.1015" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_logo.xml" value="0.1085" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_lpet_btn.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_other_card.xml" value="0.1015" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_pet_logo.xml" value="0.1085" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_pet_marker.xml" value="0.1015" />
         <entry key="..\:/AndroidStudioProject/Petshelter/app/src/main/res/drawable/ic_pet_shelter.xml" value="0.1085" />

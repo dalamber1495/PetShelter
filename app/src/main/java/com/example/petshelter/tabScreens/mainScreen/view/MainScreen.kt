@@ -1,14 +1,17 @@
 package com.example.petshelter.tabScreens.mainScreen.view
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.petshelter.tabScreens.mainScreen.components.BottomBarItem
 import com.example.petshelter.tabScreens.mainScreen.components.MainPageBottomBar
@@ -23,11 +26,13 @@ fun MainScreen(
 ) {
     val currentTab = uiState.currentTabRoute.observeAsState()
     val tabsNavigator = rememberNavController()
+    val navBackStackEntry by tabsNavigator.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         bottomBar = {
             MainPageBottomBar(
-                currentTab.value ?: BottomBarItem.AnnouncementTabItem.route
+                currentRoute?:BottomBarItem.AnnouncementTabItem.route
             ) {
                 tabsNavigator.navigate(it) {
                     tabsNavigator.graph.startDestinationRoute?.let { route ->

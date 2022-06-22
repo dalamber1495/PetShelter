@@ -11,6 +11,7 @@ import com.example.petshelter.tabScreens.announcementTab.view.AnnouncementTabScr
 import com.example.petshelter.tabScreens.announcementTab.viewModel.AnnouncementTabViewModel
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.CreateAnnouncementTabScreen
 import com.example.petshelter.tabScreens.createAnnouncementTab.viewModel.CreateAnnouncementTabViewModel
+import com.example.petshelter.tabScreens.profileTab.view.ProfileScreen
 import com.example.petshelter.tabScreens.profileTab.view.ProfileTabScreen
 import com.example.petshelter.tabScreens.profileTab.viewModel.ProfileTabViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -30,14 +31,15 @@ fun TabsNavigation(navController: NavHostController) {
 
             CreateAnnouncementTabScreen(
                 viewModel.uiState,
-                {},viewModel::showPhoto,
-            viewModel::firstStepReady,
-            viewModel::secondStepReady,
-            viewModel::markerPositionMove)
+                {}, viewModel::showPhoto,
+                viewModel::firstStepReady,
+                viewModel::secondStepReady,
+                viewModel::markerPositionMove,
+                viewModel::animalSelected
+            )
         }
         composable(route = MainScreenTabRoute.ProfileTab.name) {
-            val viewModel = hiltViewModel<ProfileTabViewModel>()
-            ProfileTabScreen(
+            ProfileScreen(
             )
         }
     }

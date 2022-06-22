@@ -1,4 +1,4 @@
-package com.example.petshelter.tabScreens.createAnnouncementTab.view.components
+package com.example.petshelter.tabScreens.profileTab.view
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,21 +12,16 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -34,21 +29,30 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
+import com.eql.consts.ui.colors.petShelterBlack
 import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
+import com.example.petshelter.authScreens.main.components.FormField
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
-import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
-import com.example.petshelter.ui.theme.PetShelterTheme
+import com.example.petshelter.authScreens.main.consts.joinTextStyle
+import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.TopBarCreateAnnouncement
+import com.example.petshelter.tabScreens.mainScreen.consts.ultraLightGray
+import com.example.petshelter.tabScreens.profileTab.model.ProfileTabUiState
+import com.example.petshelter.tabScreens.profileTab.navigation.routeObject.ProfileScreenRoute
+import com.example.petshelter.ui.styles.profileTextStyle
 import java.io.File
 import java.util.*
 
 @Composable
-fun FirstStepCreateAnnouncementForm(
-    screenIsBusy: Boolean,
-    avatarUri: Uri?,
+fun EditProfileScreen(
     addPhotoCallback: (Uri?) -> Unit,
-    firstStepReadyCallback: () -> Unit
-) {
+    uiState: ProfileTabUiState,
+    popBackStackCallback:(NavController)->Unit,
+    navController: NavController,
+){
+    val screenIsBusy = uiState.screenBusy.observeAsState(false)
+    val avatarUri = uiState.avatarUri.observeAsState(null)
+    val nameAndSurname = uiState.nameAndSurname.observeAsState("Имя и фамилия")
 
     val context = LocalContext.current
     val cropImage = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
@@ -56,7 +60,7 @@ fun FirstStepCreateAnnouncementForm(
             true -> {
                 val uriContent = result.uriContent
                 if (uriContent != null) addPhotoCallback.invoke(
-                        uriContent
+                    uriContent
                 )
             }
             else -> {
@@ -65,6 +69,7 @@ fun FirstStepCreateAnnouncementForm(
             }
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -72,80 +77,65 @@ fun FirstStepCreateAnnouncementForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        when (avatarUri != null) {
-            true -> {
-                TopBarCreateAnnouncement(
-                    backArrowShow = true,
-                    textTopBar = stringResource(R.string.upload_photo),
-                    )
-                AnimalPhoto(
-                    isPhotoBusy = screenIsBusy,
-                    photoUri = avatarUri,
-                    firstStepReadyCallback = firstStepReadyCallback,
-                    context = context,
-                    cropImage = cropImage
-                )
-            }
-            false -> {
-                TopBarCreateAnnouncement(
-                    backArrowShow = false,
-                    textTopBar = stringResource(R.string.upload_photo),
-                    )
-                AddPhotoBtn(context = context, cropImage = cropImage)
-            }
+
+        TopBarCreateAnnouncement(
+            backArrowShow = true,
+            backArrowCallback = {popBackStackCallback.invoke(navController)},
+            textTopBar = "Изменение профиля"
+        )
+        Spacer(modifier = Modifier.height(48.dp))
+        ChangeProfilePhoto(
+            isPhotoBusy = screenIsBusy.value,
+            photoUri = avatarUri.value,
+            context = context,
+            cropImage = cropImage
+        )
+        Spacer(modifier = Modifier.height(40.dp))
+
+        FormField(modifier = Modifier.height(56.dp), placeHolder = nameAndSurname.value) {
+
         }
 
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PetShelterBtn(modifier = Modifier
+                .width(165.dp)
+                .height(56.dp), text = "Продолжить") {
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
 
     }
 }
 
 @Composable
-fun AddPhotoBtn(
-    context: Context,
-    cropImage: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        PetShelterBtn(
-            modifier = Modifier
-                .width(218.dp)
-                .height(56.dp),
-            text = "Добавить фото",
-            image = R.drawable.ic_file_download,
-            clickCallback = { takePhoto(context = context, cropImage = cropImage) }
-        )
-    }
-}
-
-@Composable
-fun AnimalPhoto(
-    photoUri: Uri?,
+fun ChangeProfilePhoto(
     isPhotoBusy: Boolean,
-    firstStepReadyCallback: () -> Unit?,
+    photoUri: Uri?,
     context: Context,
     cropImage: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>
 ) {
-    Box(
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
+            .size(184.dp)
             .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                takePhoto(context = context, cropImage = cropImage)
+                takeChangePhotoProfile(context = context, cropImage = cropImage)
             }) {
 
         Card(
             modifier = Modifier.wrapContentSize(),
+            shape = CircleShape,
+            backgroundColor = ultraLightGray,
             elevation = 0.dp
         ) {
             SubcomposeAsyncImage(
                 model = photoUri,
-                contentDescription = "animal_photo",
+                contentDescription = "profile_photo",
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
             ) {
                 when (painter.state) {
                     is AsyncImagePainter.State.Loading -> CircularProgressIndicator()
@@ -153,6 +143,7 @@ fun AnimalPhoto(
                         when (isPhotoBusy) {
                             true -> CircularProgressIndicator(color = petShelterBlue)
                             else -> {
+                                NonChangePhotoField()
                             }
                         }
                     }
@@ -173,27 +164,14 @@ fun AnimalPhoto(
                 }
             }
         }
-    }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        PetShelterBtn(
-            modifier = Modifier
-                .width(205.dp)
-                .height(56.dp),
-            text = "Указать адрес",
-            imageAfter = R.drawable.ic_baseline_arrow_forward_ios_24_btn,
-            clickCallback = {firstStepReadyCallback.invoke()}
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
+        Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.End) {
+            Image(painter = painterResource(id = R.drawable.ic_text_button_fluid), contentDescription = "change photo icon")
+        }
     }
 }
 
-fun takePhoto(
+
+fun takeChangePhotoProfile(
     context: Context,
     cropImage: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>
 ) {
@@ -214,21 +192,24 @@ fun takePhoto(
             setGuidelines(CropImageView.Guidelines.ON_TOUCH)
             setOutputCompressFormat(Bitmap.CompressFormat.PNG)
             setAspectRatio(1, 1)
+            setCropShape(CropImageView.CropShape.OVAL)
             setMinCropResultSize(150, 150)
         }
     )
-
 }
 
-@Preview
 @Composable
-fun FirstStepCreateAnnouncementFormPreview() {
-    PetShelterTheme {
-        FirstStepCreateAnnouncementForm(
-            screenIsBusy = false,
-            avatarUri = null,
-            firstStepReadyCallback = {},
-            addPhotoCallback = {}
+fun NonChangePhotoField() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_image_field),
+            contentDescription = stringResource(id = R.string.photo_field),
+            modifier = Modifier
+                .width(50.dp)
+                .height(50.dp)
         )
     }
 }

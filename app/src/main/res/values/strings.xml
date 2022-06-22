@@ -10,4 +10,5 @@
     <string name="create_announce_tab_label">Создать объявление</string>
     <string name="profile_tab_label">Профиль</string>
     <string name="upload_photo">Загрузите фотографию</string>
+    <string name="photo_field">photo field</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 val petShelterBlue = Color(0xFF35AAFF)
 val petShelterWhite = Color(0xFFFFFFFF)
+val petShelterOrange = Color(0xFFE9AC5C)
 
 
 val petShelterBlack = Color(0xFF001829)

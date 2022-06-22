@@ -43,7 +43,7 @@ fun SecondStepCreateAnnouncementForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        TopBarCreateAnnouncement(backArrowShow = true, textTopBar = "Где вы видели питомца?", {})
+        TopBarCreateAnnouncement(backArrowShow = true, textTopBar = "Где вы видели питомца?")
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMapView(
                 modifier = Modifier.matchParentSize(),
@@ -107,8 +107,7 @@ fun SecondStepCreateAnnouncementForm(
                         .height(56.dp),
                     text = "Подтвердить",
                     image = R.drawable.ic_done,
-                    clickCallback = {
-                    }
+                    clickCallback = {secondStepReadyCallback.invoke(SecondStepLocateData())}
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 

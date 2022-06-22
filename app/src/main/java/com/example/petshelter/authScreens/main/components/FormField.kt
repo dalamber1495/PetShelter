@@ -16,6 +16,7 @@ import com.eql.consts.ui.colors.petShelterWhite
 
 @Composable
 fun FormField(
+    modifier: Modifier,
     placeHolder:String,
     valueCallback:()->Unit
 ){
@@ -24,9 +25,7 @@ fun FormField(
         shape = RoundedCornerShape(8.dp),
         elevation = 10.dp
     ) {
-        TextField(modifier = Modifier
-            .height(56.dp)
-            .fillMaxWidth(),
+        TextField(modifier = modifier.fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = petShelterWhite,
 

@@ -117,9 +117,13 @@ fun AuthTabsContent(
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
                         Column {
-                            FormField(placeHolder = "Email", {})
+                            FormField(modifier = Modifier
+                                .height(56.dp),
+                                placeHolder = "Email", {})
                             Spacer(modifier = Modifier.height(32.dp))
-                            FormField(placeHolder = "Пароль", {})
+                            FormField(modifier = Modifier
+                                .height(56.dp),
+                                placeHolder = "Пароль", {})
                         }
 
                         PetShelterBtn(
@@ -149,13 +153,21 @@ fun AuthTabsContent(
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
                         Column {
-                            FormField(placeHolder = "Имя", {})
+                            FormField(modifier = Modifier
+                                .height(56.dp),
+                                placeHolder = "Имя", {})
                             Spacer(modifier = Modifier.height(32.dp))
-                            FormField(placeHolder = "Email", {})
+                            FormField(modifier = Modifier
+                                .height(56.dp),
+                                placeHolder = "Email", {})
                             Spacer(modifier = Modifier.height(32.dp))
-                            FormField(placeHolder = "Пароль", {})
+                            FormField(modifier = Modifier
+                                .height(56.dp),
+                                placeHolder = "Пароль", {})
                             Spacer(modifier = Modifier.height(32.dp))
-                            FormField(placeHolder = "Повторите пароль", {})
+                            FormField(modifier = Modifier
+                                .height(56.dp),
+                                placeHolder = "Повторите пароль", {})
                         }
                         PetShelterBtn(modifier = Modifier
                             .wrapContentWidth()
