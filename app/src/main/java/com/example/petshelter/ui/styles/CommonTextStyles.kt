@@ -52,3 +52,17 @@ val profileTextStyle = TextStyle(
     fontStyle = FontStyle.Normal,
     fontFamily = mulishFont
 )
+val dialogTextStyle = TextStyle(
+    color = petShelterBlack,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.W500,
+    fontStyle = FontStyle.Normal,
+    fontFamily = mulishFont
+)
+val dialogBtnTextStyle = TextStyle(
+    color = petShelterBlack,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.W600,
+    fontStyle = FontStyle.Normal,
+    fontFamily = mulishFont
+)

@@ -14,6 +14,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +43,7 @@ import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.T
 import com.example.petshelter.tabScreens.mainScreen.consts.ultraLightGray
 import com.example.petshelter.tabScreens.profileTab.model.ProfileTabUiState
 import com.example.petshelter.tabScreens.profileTab.navigation.routeObject.ProfileScreenRoute
+import com.example.petshelter.tabScreens.profileTab.view.components.LogoutDialog
 import com.example.petshelter.ui.styles.profileTextStyle
 import com.example.petshelter.ui.theme.PetShelterTheme
 import java.io.File
@@ -57,6 +60,14 @@ fun ProfileTabScreen(
     val screenIsBusy = uiState.screenBusy.observeAsState(false)
     val avatarUri = uiState.avatarUri.observeAsState(null)
     val nameAndSurname = uiState.nameAndSurname.observeAsState("Имя и фамилия")
+    val showDialogLogout = remember {
+        mutableStateOf(false)
+    }
+
+    LogoutDialog(
+        isDisplayed = showDialogLogout.value,
+        toggleDialogDisplayCallback = { showDialogLogout.value = false }) {
+    }
 
     Column(
         modifier = Modifier
@@ -108,7 +119,9 @@ fun ProfileTabScreen(
             }
             Spacer(modifier = Modifier.height(24.dp))
             TextButton(modifier = Modifier.wrapContentSize(),
-                onClick = { }) {
+                onClick = {
+                    showDialogLogout.value = true
+                }) {
                 Row {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_logout),
@@ -132,7 +145,8 @@ fun ProfilePhoto(
 ) {
     Surface(
         modifier = Modifier
-            .size(184.dp)) {
+            .size(184.dp)
+    ) {
 
         Card(
             modifier = Modifier.wrapContentSize(),
@@ -205,7 +219,7 @@ fun ProfileTabScreenPreview() {
                 MutableLiveData("")
             ),
             NavController(LocalContext.current),
-            {de,ec ->}
+            { de, ec -> }
         )
     }
 }

@@ -35,7 +35,6 @@ fun AnnouncementTabScreen(
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     Column {
-
         TabRow(
             modifier = Modifier
                 .fillMaxWidth()
