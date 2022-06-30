@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.eql.consts.ui.colors.petShelterBlack
 import com.eql.consts.ui.colors.petShelterBlue
@@ -65,4 +66,21 @@ val dialogBtnTextStyle = TextStyle(
     fontWeight = FontWeight.W600,
     fontStyle = FontStyle.Normal,
     fontFamily = mulishFont
+)
+
+val titleAnnounceTextStyle = TextStyle(
+    color = petShelterBlack,
+    fontSize = 22.sp,
+    fontWeight = FontWeight.W700,
+    fontStyle = FontStyle.Normal,
+    fontFamily = mulishFont,
+    textAlign = TextAlign.Left
+)
+val descriptionAnnounceTextStyle = TextStyle(
+    color = petShelterBlack,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.W400,
+    fontStyle = FontStyle.Normal,
+    fontFamily = mulishFont,
+    textAlign = TextAlign.Left,
 )

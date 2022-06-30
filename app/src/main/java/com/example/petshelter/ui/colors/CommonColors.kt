@@ -6,10 +6,10 @@ import androidx.compose.ui.graphics.Color
 val petShelterBlue = Color(0xFF35AAFF)
 val petShelterWhite = Color(0xFFFFFFFF)
 val petShelterOrange = Color(0xFFE9AC5C)
-
+val placeHolderColor = Color(0xFFB3B3B3)
 
 val petShelterBlack = Color(0xFF001829)
-val backgroundTopColor = Color(0xFF00602D)
+val backgroundPhotoColor = Color(0xFFF5F5F5)
 
 
 //val greenGradientBrush = Brush.verticalGradient(

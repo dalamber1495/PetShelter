@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,7 +38,7 @@ fun FormField(
     Card(
         Modifier.padding(start = 24.dp, end = 24.dp),
         shape = RoundedCornerShape(8.dp),
-        elevation = 10.dp
+        elevation = 5.dp
     ) {
         TextField(
             modifier = modifier.fillMaxWidth(),

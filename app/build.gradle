@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 apply plugin: 'kotlin-android'
 
@@ -78,6 +79,8 @@ dependencies {
     implementation 'com.google.maps.android:maps-ktx:3.3.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
+    //Google Places
+    implementation 'com.google.android.libraries.places:places:2.6.0'
 
     //Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'

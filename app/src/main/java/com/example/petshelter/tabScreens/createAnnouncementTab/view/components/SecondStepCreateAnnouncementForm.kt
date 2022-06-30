@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
+import com.example.petshelter.common.composables.GoogleMapView
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import com.example.petshelter.utils.getBitmapFromVectorDrawable
 import com.google.android.gms.maps.model.*
@@ -118,56 +119,5 @@ fun SecondStepCreateAnnouncementForm(
     }
 
 
-}
-
-@Composable
-fun GoogleMapView(
-    modifier: Modifier,
-    coordinateMarker:LatLng,
-    cameraPositionState: CameraPositionState,
-    onMapLoaded: () -> Unit,
-    content: @Composable () -> Unit = {}
-) {
-    val petPositionState = rememberMarkerState(position = coordinateMarker)
-    var uiSettings by remember {
-        mutableStateOf(
-            MapUiSettings(
-                compassEnabled = false,
-                zoomControlsEnabled = false
-            )
-        )
-    }
-    var mapProperties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
-    }
-    val markerImage = getBitmapFromVectorDrawable(LocalContext.current, R.drawable.ic_pet_marker)
-//    BitmapFactory.decodeResource(LocalContext.current.resources,R.drawable.ic_pet_marker)
-    Log.e(TAG, "GoogleMapView: $markerImage")
-
-    GoogleMap(
-        modifier = modifier,
-        cameraPositionState = cameraPositionState,
-        properties = mapProperties,
-        uiSettings = uiSettings,
-        onMapLoaded = onMapLoaded,
-        onPOIClick = {
-            Log.d(TAG, "POI clicked: ${it.name}")
-        }
-    ) {
-        val markerClick: (Marker) -> Boolean = {
-            Log.d(TAG, "${it.title} was clicked")
-            cameraPositionState.projection?.let { projection ->
-                Log.d(TAG, "The current projection is: $projection")
-            }
-            false
-        }
-        MarkerOptions.CONTENTS_FILE_DESCRIPTOR
-        Marker(
-            state = petPositionState,
-            title = "Marker in Animal",
-            onClick = markerClick,
-            icon = BitmapDescriptorFactory.fromBitmap(markerImage!!)
-        )
-    }
 }
 

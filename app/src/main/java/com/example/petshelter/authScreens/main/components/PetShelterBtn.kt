@@ -31,7 +31,7 @@ fun PetShelterBtn(
 ) {
     Button(
         modifier = modifier
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp)),
+            .shadow(elevation = 5.dp, shape = RoundedCornerShape(12.dp)),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = petShelterBlue

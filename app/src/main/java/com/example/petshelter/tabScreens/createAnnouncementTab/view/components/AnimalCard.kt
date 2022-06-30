@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.eql.consts.ui.colors.backgroundTopColor
 import com.eql.consts.ui.colors.petShelterBlue
 import com.eql.consts.ui.colors.petShelterOrange
 import com.eql.consts.ui.colors.petShelterWhite
