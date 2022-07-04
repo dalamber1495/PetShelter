@@ -7,6 +7,7 @@ val petShelterBlue = Color(0xFF35AAFF)
 val petShelterWhite = Color(0xFFFFFFFF)
 val petShelterOrange = Color(0xFFE9AC5C)
 val placeHolderColor = Color(0xFFB3B3B3)
+val validationErrorColor = Color(0xFFD81852)
 
 val petShelterBlack = Color(0xFF001829)
 val backgroundPhotoColor = Color(0xFFF5F5F5)

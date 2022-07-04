@@ -6,26 +6,40 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.eql.consts.ui.colors.petShelterWhite
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.common.AuthTabItem
 import com.example.petshelter.authScreens.main.components.AuthTabs
 import com.example.petshelter.authScreens.main.consts.joinTextStyle
+import com.example.petshelter.authScreens.main.model.AuthUiState
 import com.example.petshelter.navigation.routeObject.AppScreens
 import com.example.petshelter.ui.theme.PetShelterTheme
+import com.example.petshelter.utils.UiText
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AuthScreen(
-    navigateCallback:(AppScreens)->Unit,
+    uiState: AuthUiState,
+    navigateCallback: (AppScreens) -> Unit,
+    joinEmailCallback: (String) -> Unit,
+    joinPasswordCallback: (String) -> Unit,
+    nameCallback: (String) -> Unit,
+    registerEmailCallback: (String) -> Unit,
+    registerPasswordCallback: (String) -> Unit,
+    repeatPasswordCallback: (String) -> Unit,
+    registerCallback: () -> Unit,
+    joinCallback: () -> Unit
 ) {
 
     val tabs = listOf(
@@ -43,7 +57,7 @@ fun AuthScreen(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(vertical = 50.dp),
+                    .padding(vertical = 30.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -64,10 +78,23 @@ fun AuthScreen(
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
-                AuthTabs(tabs = tabs, pagerState = pagerState,    navigateCallback)
+                AuthTabs(
+                    tabs = tabs,
+                    pagerState = pagerState,
+                    uiState = uiState,
+                    forgetPassCallback = navigateCallback,
+                    joinEmailCallback = joinEmailCallback,
+                    joinPasswordCallback = joinPasswordCallback,
+                    nameCallback = nameCallback,
+                    registerEmailCallback = registerEmailCallback,
+                    registerPasswordCallback = registerPasswordCallback,
+                    repeatPasswordCallback = repeatPasswordCallback,
+                    registerCallback = registerCallback,
+                    joinCallback = joinCallback
+                )
 
                 TextButton(modifier = Modifier.wrapContentSize(),
-                    onClick = {navigateCallback.invoke(AppScreens.MainAppScreen)}) {
+                    onClick = { navigateCallback.invoke(AppScreens.MainAppScreen) }) {
                     Row {
                         Text(stringResource(R.string.signWithoutBtn), style = joinTextStyle)
                         Image(
@@ -77,7 +104,6 @@ fun AuthScreen(
                             )
                         )
                     }
-
                 }
             }
         }
@@ -89,6 +115,29 @@ fun AuthScreen(
 fun AuthScreenPreview() {
     PetShelterTheme {
         AuthScreen(
+            AuthUiState(
+                MutableLiveData<String>(""),
+                MutableLiveData<String>(""),
+                MutableLiveData<String>(""),
+                MutableLiveData<String>(""),
+                MutableLiveData<String>(""),
+                MutableLiveData<String>(""),
+                MutableLiveData<Boolean>(false),
+                MutableLiveData<UiText>(UiText.EmptyString),
+                MutableLiveData<UiText>(UiText.EmptyString),
+                MutableLiveData<UiText>(UiText.EmptyString),
+                MutableLiveData<UiText>(UiText.EmptyString),
+                MutableLiveData<UiText>(UiText.EmptyString),
+                MutableLiveData<UiText>(UiText.EmptyString),
+            ),
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
             {}
         )
     }

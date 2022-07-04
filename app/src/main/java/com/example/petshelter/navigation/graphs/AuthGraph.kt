@@ -2,6 +2,7 @@ package com.example.petshelter.navigation.graphs
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -19,7 +20,16 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
         composable(route = AppScreens.AuthSignUp.route) {
             val authViewModel = hiltViewModel<AuthViewModel>()
             AuthScreen(
-                authViewModel::navigateTo
+                uiState = authViewModel.uiState,
+                navigateCallback = authViewModel::navigateTo,
+                joinEmailCallback = authViewModel::joinEmailCallback,
+                joinPasswordCallback = authViewModel::joinPasswordCallback,
+                nameCallback = authViewModel::nameCallback,
+                registerEmailCallback = authViewModel::registerEmailCallback,
+                registerPasswordCallback = authViewModel::registerPasswordCallback,
+                repeatPasswordCallback = authViewModel::repeatPasswordCallback,
+                registerCallback = authViewModel::registerCallback,
+                joinCallback = authViewModel::joinCallback
             )
         }
         composable(route = AppScreens.ForgetPass.route) {

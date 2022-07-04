@@ -8,6 +8,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.eql.consts.ui.colors.petShelterBlack
 import com.eql.consts.ui.colors.petShelterBlue
+import com.eql.consts.ui.colors.validationErrorColor
 import com.example.petshelter.ui.theme.mulishFont
 
 val authTabsTextStyle = TextStyle(
@@ -78,6 +79,14 @@ val titleAnnounceTextStyle = TextStyle(
 )
 val descriptionAnnounceTextStyle = TextStyle(
     color = petShelterBlack,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.W400,
+    fontStyle = FontStyle.Normal,
+    fontFamily = mulishFont,
+    textAlign = TextAlign.Left,
+)
+val validationTextStyle = TextStyle(
+    color = validationErrorColor,
     fontSize = 12.sp,
     fontWeight = FontWeight.W400,
     fontStyle = FontStyle.Normal,

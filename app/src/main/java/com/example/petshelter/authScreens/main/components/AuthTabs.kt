@@ -1,5 +1,6 @@
 package com.example.petshelter.authScreens.main.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerBasedShape
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,8 +26,10 @@ import com.example.petshelter.R
 import com.example.petshelter.authScreens.common.AuthTabItem
 import com.example.petshelter.authScreens.main.consts.joinTextStyle
 import com.example.petshelter.authScreens.main.consts.tabTextStyle
+import com.example.petshelter.authScreens.main.model.AuthUiState
 import com.example.petshelter.navigation.routeObject.AppScreens
 import com.example.petshelter.ui.theme.Shapes
+import com.example.petshelter.utils.UiText
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -37,7 +41,16 @@ import kotlinx.coroutines.launch
 fun AuthTabs(
     tabs: List<AuthTabItem>,
     pagerState: PagerState,
-    forgetPassCallback: (AppScreens) -> Unit
+    uiState: AuthUiState,
+    forgetPassCallback: (AppScreens) -> Unit,
+    joinEmailCallback: (String) -> Unit,
+    joinPasswordCallback: (String) -> Unit,
+    nameCallback: (String) -> Unit,
+    registerEmailCallback: (String) -> Unit,
+    registerPasswordCallback: (String) -> Unit,
+    repeatPasswordCallback: (String) -> Unit,
+    registerCallback: () -> Unit,
+    joinCallback: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     TabRow(
@@ -88,7 +101,16 @@ fun AuthTabs(
     AuthTabsContent(
         tabs = tabs,
         pagerState = pagerState,
-        forgetPassCallback
+        uiState = uiState,
+        forgetPassCallback = forgetPassCallback,
+        joinEmailCallback = joinEmailCallback,
+        joinPasswordCallback = joinPasswordCallback,
+        nameCallback = nameCallback,
+        registerEmailCallback = registerEmailCallback,
+        registerPasswordCallback = registerPasswordCallback,
+        repeatPasswordCallback = repeatPasswordCallback,
+        registerCallback = registerCallback,
+        joinCallback = joinCallback
     )
 }
 
@@ -97,8 +119,33 @@ fun AuthTabs(
 fun AuthTabsContent(
     tabs: List<AuthTabItem>,
     pagerState: PagerState,
-    forgetPassCallback: (AppScreens) -> Unit
+    uiState: AuthUiState,
+    forgetPassCallback: (AppScreens) -> Unit,
+    joinEmailCallback: (String) -> Unit,
+    joinPasswordCallback: (String) -> Unit,
+    nameCallback: (String) -> Unit,
+    registerEmailCallback: (String) -> Unit,
+    registerPasswordCallback: (String) -> Unit,
+    repeatPasswordCallback: (String) -> Unit,
+    registerCallback: () -> Unit,
+    joinCallback: () -> Unit
 ) {
+    val email = uiState.email.observeAsState("")
+    val password = uiState.password.observeAsState("")
+    val registerEmail = uiState.registerEmail.observeAsState("")
+    val registerPassword = uiState.registerPassword.observeAsState("")
+    val name = uiState.name.observeAsState("")
+    val repeatPassword = uiState.repeatPassword.observeAsState("")
+    val screenBusy = uiState.screenBusy.observeAsState(false)
+    val validationJoinEmail = uiState.validationJoinEmail.observeAsState(UiText.EmptyString)
+    val validationJoinPassword = uiState.validationJoinPassword.observeAsState(UiText.EmptyString)
+    val validationRegisterEmail = uiState.validationRegisterEmail.observeAsState(UiText.EmptyString)
+    val validationRegisterPassword =
+        uiState.validationRegisterPassword.observeAsState(UiText.EmptyString)
+    val validationName = uiState.validationName.observeAsState(UiText.EmptyString)
+    val validationRepeatPassword =
+        uiState.validationRepeatPassword.observeAsState(UiText.EmptyString)
+
     HorizontalPager(
         state = pagerState,
         count = tabs.size,
@@ -117,16 +164,24 @@ fun AuthTabsContent(
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
                         Column {
-                            FormField(modifier = Modifier
-                                .height(56.dp),
+                            FormField(
+                                modifier = Modifier
+                                    .height(56.dp),
+                                text = email.value,
                                 placeHolder = "Email",
-                                valueCallback = {})
+                                validationValue = validationJoinEmail.value,
+                                valueCallback = joinEmailCallback
+                            )
                             Spacer(modifier = Modifier.height(32.dp))
-                            FormField(modifier = Modifier
-                                .height(56.dp),
+                            FormField(
+                                modifier = Modifier
+                                    .height(56.dp),
                                 placeHolder = "Пароль",
                                 visibleIcon = true,
-                                valueCallback = {})
+                                validationValue = validationJoinPassword.value,
+                                text = password.value,
+                                valueCallback = joinPasswordCallback
+                            )
                         }
 
                         PetShelterBtn(
@@ -135,7 +190,8 @@ fun AuthTabsContent(
                                 .height(60.dp),
                             image = R.drawable.ic_lpet_btn,
                             text = "Войти",
-                            clickCallback = {})
+                            clickCallback = joinCallback
+                        )
                         TextButton(modifier = Modifier.wrapContentSize(),
                             onClick = { forgetPassCallback.invoke(AppScreens.ForgetPass) }) {
                             Row {
@@ -155,36 +211,51 @@ fun AuthTabsContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
-                        Column {
-                            FormField(modifier = Modifier
-                                .height(56.dp),
+                        Column (verticalArrangement = Arrangement.SpaceBetween){
+                            FormField(
+                                modifier = Modifier
+                                    .height(56.dp),
+                                text = name.value,
                                 placeHolder = "Имя",
-                                valueCallback = {})
-                            Spacer(modifier = Modifier.height(32.dp))
-                            FormField(modifier = Modifier
-                                .height(56.dp),
+                                validationValue = validationName.value,
+                                valueCallback = nameCallback
+                            )
+                            FormField(
+                                modifier = Modifier
+                                    .height(56.dp),
+                                text = registerEmail.value,
                                 placeHolder = "Email",
-                                valueCallback = {})
-                            Spacer(modifier = Modifier.height(32.dp))
-                            FormField(modifier = Modifier
-                                .height(56.dp),
+                                validationValue = validationRegisterEmail.value,
+                                valueCallback = registerEmailCallback
+                            )
+                            FormField(
+                                modifier = Modifier
+                                    .height(56.dp),
+                                text = registerPassword.value,
                                 placeHolder = "Пароль",
                                 visibleIcon = true,
-                                valueCallback = {})
-                            Spacer(modifier = Modifier.height(32.dp))
-                            FormField(modifier = Modifier
-                                .height(56.dp),
+                                validationValue = validationRegisterPassword.value,
+                                valueCallback = registerPasswordCallback
+                            )
+                            FormField(
+                                modifier = Modifier
+                                    .height(56.dp),
+                                text = repeatPassword.value,
                                 placeHolder = "Повторите пароль",
                                 visibleIcon = true,
+                                validationValue = validationRepeatPassword.value,
                                 valueCallback
-                                = {})
+                                = repeatPasswordCallback
+                            )
                         }
-                        PetShelterBtn(modifier = Modifier
-                            .wrapContentWidth()
-                            .height(60.dp),
+                        PetShelterBtn(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .height(60.dp),
                             text = "Зарегистрироваться",
                             image = R.drawable.ic_lpet_btn,
-                            clickCallback = {})
+                            clickCallback = registerCallback
+                        )
                     }
                 }
             }

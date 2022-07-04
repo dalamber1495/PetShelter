@@ -11,4 +11,7 @@
     <string name="profile_tab_label">Профиль</string>
     <string name="upload_photo">Загрузите фотографию</string>
     <string name="photo_field">photo field</string>
+    <string name="validation_name">Поле не должно быть пустым</string>
+    <string name="validation_email">Неверный формат email. Пример: name@gmail.com</string>
+    <string name="validation_repeat_pass">Не совпадает с введенным паролем</string>
 </resources>
