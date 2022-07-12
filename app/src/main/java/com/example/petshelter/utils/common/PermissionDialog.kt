@@ -1,31 +1,31 @@
-package com.example.petshelter.tabScreens.profileTab.view.components
+package com.example.petshelter.utils.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
-import com.example.petshelter.ui.styles.dialogBtnTextStyle
 import com.example.petshelter.ui.styles.dialogTextStyle
-import com.example.petshelter.ui.theme.PetShelterTheme
 
 @Composable
-fun LogoutDialog(
+fun PermissionDialog(
     isDisplayed: Boolean,
     toggleDialogDisplayCallback: () -> Unit,
     logoutBtnCallback: () -> Unit
 ) {
 
     if (isDisplayed) {
-        Dialog(onDismissRequest = toggleDialogDisplayCallback) {
+        Dialog(onDismissRequest = toggleDialogDisplayCallback, properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true
+        )) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -46,7 +46,8 @@ fun LogoutDialog(
                     ) {
                         Spacer(modifier = Modifier.fillMaxHeight(0.2f))
                         Text(
-                            text = "Выйти  из аккаунта",
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            text = "Перейдите в настройки и включите разрешение определения местоположения",
                             textAlign = TextAlign.Center,
                             style = dialogTextStyle,
                         )
@@ -55,19 +56,11 @@ fun LogoutDialog(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            TextButton(
-                                modifier = Modifier
-                                    .width(140.dp)
-                                    .height(56.dp),
-                                onClick = toggleDialogDisplayCallback,
-                            ) {
-                                Text(text = "Выйти", style = dialogBtnTextStyle)
-                            }
                             PetShelterBtn(
                                 modifier = Modifier
                                     .width(140.dp)
                                     .height(56.dp),
-                                text = "Остаться",
+                                text = "Закрыть",
                                 clickCallback = toggleDialogDisplayCallback
                             )
                         }
@@ -76,18 +69,5 @@ fun LogoutDialog(
                 }
             }
         }
-    }
-
-}
-
-@Preview
-@Composable
-fun LogoutDialogPreview() {
-    PetShelterTheme {
-        LogoutDialog(
-            true,
-            {},
-            {}
-        )
     }
 }

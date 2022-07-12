@@ -137,7 +137,7 @@ fun ListAnnouncements(
             modifier = Modifier.padding(horizontal = 8.dp),
             columns = GridCells.Fixed(2),
             content = {
-                items(10) {
+                items(announce.size) {
                     Card(
                         modifier = Modifier
                             .padding(4.dp)

@@ -43,7 +43,7 @@ fun MapLocationScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMapView(
                 modifier = Modifier.matchParentSize(),
-                coordinateMarker = coordinate,
+                coordinateMarker = listOf(coordinate),
                 cameraPositionState = cameraPositionState,
                 onMapLoaded = {
                     isMapLoaded = true

@@ -211,7 +211,7 @@ fun AuthTabsContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
-                        Column (verticalArrangement = Arrangement.SpaceBetween){
+                        Column (verticalArrangement = Arrangement.SpaceAround){
                             FormField(
                                 modifier = Modifier
                                     .height(56.dp),
@@ -220,6 +220,7 @@ fun AuthTabsContent(
                                 validationValue = validationName.value,
                                 valueCallback = nameCallback
                             )
+                            Spacer(modifier = Modifier.height(10.dp))
                             FormField(
                                 modifier = Modifier
                                     .height(56.dp),
@@ -228,6 +229,7 @@ fun AuthTabsContent(
                                 validationValue = validationRegisterEmail.value,
                                 valueCallback = registerEmailCallback
                             )
+                            Spacer(modifier = Modifier.height(10.dp))
                             FormField(
                                 modifier = Modifier
                                     .height(56.dp),
@@ -237,6 +239,7 @@ fun AuthTabsContent(
                                 validationValue = validationRegisterPassword.value,
                                 valueCallback = registerPasswordCallback
                             )
+                            Spacer(modifier = Modifier.height(10.dp))
                             FormField(
                                 modifier = Modifier
                                     .height(56.dp),

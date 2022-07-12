@@ -64,6 +64,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
 
+
+
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:30.0.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
@@ -78,6 +80,7 @@ dependencies {
     implementation 'com.google.maps.android:maps-compose:2.2.0'
     implementation 'com.google.maps.android:maps-ktx:3.3.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
 
     //Google Places
     implementation 'com.google.android.libraries.places:places:2.6.0'
@@ -99,6 +102,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-scalars:2.7.2"
 
     // Accompanist
+    implementation "com.google.accompanist:accompanist-permissions:0.20.0"
     implementation "com.google.accompanist:accompanist-pager:0.20.0" // Pager
     implementation "com.google.accompanist:accompanist-pager-indicators:0.20.0" // Pager Indicators
     implementation "com.google.accompanist:accompanist-placeholder:0.20.0" // Placeholder

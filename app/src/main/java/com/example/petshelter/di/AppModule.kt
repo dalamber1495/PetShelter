@@ -6,6 +6,7 @@ import com.example.petshelter.data.remote.PetShelterApi
 import com.example.petshelter.domain.repository.backendAnimals.AnnouncementRepositoryImpl
 import com.example.petshelter.domain.repository.backendAnimals.AnnouncementsRepository
 import com.example.petshelter.domain.repository.firebase.FirebaseBackend
+import com.example.petshelter.geo.LocationLiveData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,4 +40,9 @@ object AppModule {
     @Singleton
     fun provideFirebaseBackend(@ApplicationContext context: Context): FirebaseBackend =
         FirebaseBackend()
+
+    @Provides
+    @Singleton
+    fun provideLocationLiveData(@ApplicationContext context: Context) =
+        LocationLiveData(context)
 }

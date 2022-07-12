@@ -22,10 +22,9 @@ fun TabsNavigation(navController: NavHostController) {
         }
         composable(route = MainScreenTabRoute.CreateAnnouncementTab.name) {
             val viewModel = hiltViewModel<CreateAnnouncementTabViewModel>()
-
             CreateAnnouncementTabScreen(
                 viewModel.uiState,
-                {}, viewModel::showPhoto,
+                viewModel::showPhoto,
                 viewModel::firstStepReady,
                 viewModel::secondStepReady,
                 viewModel::markerPositionMove,

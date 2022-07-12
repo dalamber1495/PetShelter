@@ -1,5 +1,6 @@
 package com.example.petshelter.tabScreens.createAnnouncementTab.view
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
@@ -28,11 +30,10 @@ import com.example.petshelter.ui.theme.PetShelterTheme
 @Composable
 fun CreateAnnouncementTabScreen(
     uiState: FillAnimalInfoUiState,
-    checkStepsState: () -> Unit,
     addPhotoCallback: (Uri?) -> Unit,
     firstStepReadyCallback: () -> Unit,
     secondStepReadyCallback: (SecondStepLocateData) -> Unit,
-    markerPositionCallback: () -> SecondStepLocateData,
+    markerPositionCallback: () -> Unit,
     animalSelectedCallback:(AnimalCardState)->Unit
 
 ) {
@@ -64,7 +65,7 @@ fun CreateAnnouncementTabScreen(
                 SecondStepCreateAnnouncementForm(
                     secondStepLocateData = secondStepLocateData.value,
                     markerPositionCallback = markerPositionCallback,
-                    secondStepReadyCallback = secondStepReadyCallback
+                    secondStepReadyCallback = secondStepReadyCallback,
                 )
             }
             firstStep.value && secondStep.value && !thirdStep.value -> {
@@ -102,7 +103,6 @@ fun CreateAnnouncementTabScreenPreview() {
             {},
             {},
             { SecondStepLocateData() },
-            {}
         )
     }
 }

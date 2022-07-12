@@ -16,12 +16,14 @@ import com.google.maps.android.compose.*
 @Composable
 fun GoogleMapView(
     modifier: Modifier,
-    coordinateMarker: LatLng,
+    coordinateMarker: List<LatLng>? = null,
     cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit,
     content: @Composable () -> Unit = {}
 ) {
-    val petPositionState = rememberMarkerState(position = coordinateMarker)
+
+    val petPositionState: List<MarkerState>? =
+        coordinateMarker?.map { rememberMarkerState(position = it) }
     var uiSettings by remember {
         mutableStateOf(
             MapUiSettings(
@@ -36,6 +38,7 @@ fun GoogleMapView(
     val markerImage = getBitmapFromVectorDrawable(LocalContext.current, R.drawable.ic_pet_marker)
 //    BitmapFactory.decodeResource(LocalContext.current.resources,R.drawable.ic_pet_marker)
     Log.e(TAG, "GoogleMapView: $markerImage")
+
 
     GoogleMap(
         modifier = modifier,
@@ -55,11 +58,14 @@ fun GoogleMapView(
             false
         }
         MarkerOptions.CONTENTS_FILE_DESCRIPTOR
-        Marker(
-            state = petPositionState,
-            title = "Marker in Animal",
-            onClick = markerClick,
-            icon = BitmapDescriptorFactory.fromBitmap(markerImage!!)
-        )
+
+        petPositionState?.forEach {
+            Marker(
+                state = it,
+                title = "Marker in Animal",
+                onClick = markerClick,
+                icon = BitmapDescriptorFactory.fromBitmap(markerImage!!)
+            )
+        }
     }
 }
