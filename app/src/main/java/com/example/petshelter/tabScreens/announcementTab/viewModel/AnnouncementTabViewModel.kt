@@ -37,12 +37,9 @@ class AnnouncementTabViewModel @Inject constructor(
         animalsState = animalsState
     )
 
-    init {
-        getAnnouncements()
-    }
 
-    private fun getAnnouncements() {
-        getAnnouncementsUseCase().onEach { result ->
+    fun getAnnouncements(petType:String) {
+        getAnnouncementsUseCase(petType).onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     animalsState.postValue(

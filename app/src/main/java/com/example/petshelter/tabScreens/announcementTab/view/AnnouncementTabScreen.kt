@@ -31,7 +31,7 @@ import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.consts.mainTabTextStyle
 import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.model.AnnouncementsListState
-import com.example.petshelter.tabScreens.announcementTab.common.AnimalsTabItem
+import com.example.petshelter.tabScreens.announcementTab.common.*
 import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementTabUiState
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
 import com.example.petshelter.ui.styles.descriptionAnnounceTextStyle
@@ -41,6 +41,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.google.api.FieldBehavior
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -49,11 +50,21 @@ fun AnnouncementTabScreen(
     uiState: AnnouncementTabUiState,
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback:(Int)->Unit
+    selectAnnouncementCallback: (Int) -> Unit,
+    getAnnouncementsCallback:(String)->Unit
 ) {
 
     val announcements = uiState.animalsState.observeAsState(AnnouncementsListState())
+    val announcementTab=uiState.animalsTabs.observeAsState("")
 
+    LaunchedEffect(announcementTab){
+        when(announcementTab.value){
+            allRoute -> {getAnnouncementsCallback.invoke("dog")}
+            dogsRoute -> {getAnnouncementsCallback.invoke("dog")}
+            catsRoute -> {getAnnouncementsCallback.invoke("cat")}
+            otherRoute -> {getAnnouncementsCallback.invoke("other")}
+        }
+    }
 
     val tabs = listOf(
         AnimalsTabItem.All,
@@ -127,17 +138,20 @@ fun AnnouncementTabScreen(
 @Composable
 fun ListAnnouncements(
     announcements: AnnouncementsListState,
-    navigateCallback: ( NavController,AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback:(Int)->Unit,
+    navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
+    selectAnnouncementCallback: (Int) -> Unit,
     navController: NavController
 ) {
     val announce = announcements.announcements
     if (announce.isNotEmpty()) {
         LazyVerticalGrid(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp),
             columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(vertical = 15.dp),
             content = {
-                items(announce.size) {
+                items(15) {
                     Card(
                         modifier = Modifier
                             .padding(4.dp)
@@ -204,7 +218,7 @@ fun ListAnnouncements(
                 }
             })
     }
-    if(announcements.isLoading){
+    if (announcements.isLoading) {
         CircularProgressIndicator(color = petShelterBlue)
     }
 }
@@ -215,28 +229,48 @@ fun AuthTabsContent(
     tabs: List<AnimalsTabItem>,
     pagerState: PagerState,
     announcements: AnnouncementsListState,
-    navigateCallback: (NavController,AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback:(Int)->Unit,
+    navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
+    selectAnnouncementCallback: (Int) -> Unit,
     navController: NavController
 ) {
 
     HorizontalPager(
         state = pagerState,
         count = tabs.size,
-        modifier = Modifier.fillMaxHeight(1f)
+        modifier = Modifier.fillMaxHeight()
     ) { page ->
         when (tabs[page]) {
             is AnimalsTabItem.All -> {
-                ListAnnouncements(announcements, navigateCallback, selectAnnouncementCallback,navController)
+                ListAnnouncements(
+                    announcements,
+                    navigateCallback,
+                    selectAnnouncementCallback,
+                    navController
+                )
             }
             is AnimalsTabItem.Dogs -> {
-                ListAnnouncements(announcements, navigateCallback, selectAnnouncementCallback,navController)
+                ListAnnouncements(
+                    announcements,
+                    navigateCallback,
+                    selectAnnouncementCallback,
+                    navController
+                )
             }
             is AnimalsTabItem.Cats -> {
-                ListAnnouncements(announcements, navigateCallback, selectAnnouncementCallback,navController)
+                ListAnnouncements(
+                    announcements,
+                    navigateCallback,
+                    selectAnnouncementCallback,
+                    navController
+                )
             }
             is AnimalsTabItem.Other -> {
-                ListAnnouncements(announcements, navigateCallback, selectAnnouncementCallback,navController)
+                ListAnnouncements(
+                    announcements,
+                    navigateCallback,
+                    selectAnnouncementCallback,
+                    navController
+                )
             }
         }
     }
@@ -253,8 +287,8 @@ fun AnnouncementTabScreenPreview() {
                 animalsState = MutableLiveData(AnnouncementsListState())
             ),
             navController = rememberNavController(),
-            {w,t->},
-            {}
+            { w, t -> },
+            {}, {}
 
         )
     }

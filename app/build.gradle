@@ -9,12 +9,12 @@ plugins {
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.petshelter"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [MAPS_API_KEY: "AIzaSyA5SIb9KoiPW-bqjayWCwHgScWedjsbPB8"]

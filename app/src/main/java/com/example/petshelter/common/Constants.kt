@@ -1,5 +1,5 @@
 package com.example.petshelter.common
 
 object Constants {
-    const val BASE_URL = "https://virtserver.swaggerhub.com/"
+    const val BASE_URL = "https://petsproject.issart.com/api/1.0.0/"
 }
