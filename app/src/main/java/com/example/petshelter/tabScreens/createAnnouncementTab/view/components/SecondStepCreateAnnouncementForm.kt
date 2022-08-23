@@ -23,7 +23,9 @@ import com.example.petshelter.common.composables.GoogleMapView
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import com.example.petshelter.utils.common.PermissionDialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 
@@ -62,13 +64,13 @@ fun SecondStepCreateAnnouncementForm(
                     when (it.permission) {
                         Manifest.permission.ACCESS_FINE_LOCATION -> {
                             when {
-                                it.hasPermission -> {
+                                it.status.isGranted -> {
                                     markerPositionCallback.invoke()
                                 }
-                                it.shouldShowRationale -> {
+                                it.status.shouldShowRationale -> {
                                     permissionStates.launchMultiplePermissionRequest()
                                 }
-                                !it.hasPermission && !it.shouldShowRationale -> {
+                                !it.status.isGranted && !it.status.shouldShowRationale -> {
                                     permissionDialog.value = true
                                 }
 
@@ -148,13 +150,13 @@ fun SecondStepCreateAnnouncementForm(
                             when (it.permission) {
                                 Manifest.permission.ACCESS_FINE_LOCATION -> {
                                     when {
-                                        it.hasPermission -> {
+                                        it.status.isGranted -> {
                                             markerPositionCallback.invoke()
                                         }
-                                        it.shouldShowRationale -> {
+                                        it.status.shouldShowRationale -> {
                                             permissionStates.launchMultiplePermissionRequest()
                                         }
-                                        !it.hasPermission && !it.shouldShowRationale -> {
+                                        !it.status.isGranted && !it.status.shouldShowRationale -> {
                                             permissionDialog.value = true
                                         }
 

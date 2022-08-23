@@ -29,48 +29,80 @@ class AnnouncementTabViewModel @Inject constructor(
     val getAnnouncementsUseCase: GetAnnouncementsUseCase
 ) : ViewModel() {
     private val animalsState = MutableLiveData(AnnouncementsListState())
+    private val listDogs = MutableLiveData(AnnouncementsListState())
+    private val listCats = MutableLiveData(AnnouncementsListState())
+    private val listOther = MutableLiveData(AnnouncementsListState())
+    private val isRefreshing = MutableLiveData(false)
     private val animalsTabs = MutableLiveData(AnimalsTabItem.All.route)
     private val _detailUiState = mutableStateOf<Announcement?>(null)
-    val detailUiState:State<Announcement?> = _detailUiState
+    val detailUiState: State<Announcement?> = _detailUiState
     val uiState = AnnouncementTabUiState(
         animalsTabs = animalsTabs,
-        animalsState = animalsState
+        animalsState = animalsState,
+        listDogs = listDogs,
+        listCats = listCats,
+        listOther = listOther,
+        isRefreshing = isRefreshing
     )
 
+    init {
+        initAnnouncement()
+    }
 
-    fun getAnnouncements(petType:String) {
+    fun initAnnouncement() {
+        getAnnouncements("")
+        getAnnouncements("dog")
+        getAnnouncements("cat")
+        getAnnouncements("other")
+    }
+
+    fun getAnnouncements(petType: String) {
         getAnnouncementsUseCase(petType).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    animalsState.postValue(
-                        AnnouncementsListState(
-                            announcements = result.data ?: emptyList()
-                        )
-                    )
+                    when (petType) {
+                        "dog" -> listDogs.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
+                        "cat" -> listCats.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
+                        "other" -> listOther.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
+                        else -> animalsState.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
+                    }
                 }
                 is Resource.Loading -> {
-                    animalsState.postValue(AnnouncementsListState(isLoading = true))
+                    when (petType) {
+                        "dog" -> listDogs.postValue(AnnouncementsListState(isLoading = true))
+                        "cat" -> listCats.postValue(AnnouncementsListState(isLoading = true))
+                        "other" -> listOther.postValue(AnnouncementsListState(isLoading = true))
+                        else -> animalsState.postValue(AnnouncementsListState(isLoading = true))
+                    }
                 }
                 is Resource.Error -> {
-                    animalsState.postValue(
-                        AnnouncementsListState(
-                            error = result.message ?: "An unexpected error occured"
-                        )
-                    )
+                    when (petType) {
+                        "dog" -> listDogs.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
+                        "cat" -> listCats.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
+                        "other" -> listOther.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
+                        else -> animalsState.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
+                    }
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    fun selectAnnouncementCallback(index:Int){
-        _detailUiState.value = animalsState.value?.announcements?.get(index)
+    fun tabSelectCallback(tab: AnimalsTabItem) {
+        animalsTabs.postValue(tab.route)
     }
 
-    fun popBackStack(navController:NavController){
+    fun selectAnnouncementCallback(announcement: Announcement) {
+        _detailUiState.value = announcement
+    }
+
+    fun popBackStack(navController: NavController) {
         navController.popBackStack()
     }
 
-    fun navigateTo(navController:NavController,announcementsScreenRoute: AnnouncementsScreenRoute){
-        navController.navigate(announcementsScreenRoute.route,announcementsScreenRoute.options)
+    fun navigateTo(
+        navController: NavController,
+        announcementsScreenRoute: AnnouncementsScreenRoute
+    ) {
+        navController.navigate(announcementsScreenRoute.route, announcementsScreenRoute.options)
     }
 }

@@ -3,6 +3,7 @@ package com.example.petshelter.tabScreens.announcementTab.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -41,6 +42,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.api.FieldBehavior
 import kotlinx.coroutines.launch
 
@@ -50,20 +53,21 @@ fun AnnouncementTabScreen(
     uiState: AnnouncementTabUiState,
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback: (Int) -> Unit,
-    getAnnouncementsCallback:(String)->Unit
+    selectAnnouncementCallback: (Announcement) -> Unit,
+    initAnnouncement:()->Unit
 ) {
 
     val announcements = uiState.animalsState.observeAsState(AnnouncementsListState())
-    val announcementTab=uiState.animalsTabs.observeAsState("")
+    val listDogs = uiState.listDogs.observeAsState(AnnouncementsListState())
+    val listCats = uiState.listCats.observeAsState(AnnouncementsListState())
+    val listOther = uiState.listOther.observeAsState(AnnouncementsListState())
+    val isRefreshing = uiState.isRefreshing.observeAsState(false)
 
-    LaunchedEffect(announcementTab){
-        when(announcementTab.value){
-            allRoute -> {getAnnouncementsCallback.invoke("dog")}
-            dogsRoute -> {getAnnouncementsCallback.invoke("dog")}
-            catsRoute -> {getAnnouncementsCallback.invoke("cat")}
-            otherRoute -> {getAnnouncementsCallback.invoke("other")}
-        }
+    LaunchedEffect("getAnnouncements") {
+//        getAnnouncementsCallback.invoke("")
+//        getAnnouncementsCallback.invoke("dog")
+//        getAnnouncementsCallback.invoke("cat")
+//        getAnnouncementsCallback.invoke("other")
     }
 
     val tabs = listOf(
@@ -128,8 +132,13 @@ fun AnnouncementTabScreen(
             tabs = tabs,
             pagerState = pagerState,
             announcements = announcements.value,
+            listDogs = listDogs.value,
+            listCats = listCats.value,
+            listOther = listOther.value,
             navigateCallback = navigateCallback,
             selectAnnouncementCallback = selectAnnouncementCallback,
+            refreshCallback = initAnnouncement,
+            isRefreshing = isRefreshing.value,
             navController = navController
         )
     }
@@ -139,84 +148,93 @@ fun AnnouncementTabScreen(
 fun ListAnnouncements(
     announcements: AnnouncementsListState,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback: (Int) -> Unit,
+    selectAnnouncementCallback: (Announcement) -> Unit,
+    isRefreshing: Boolean,
+    refreshCallback: () -> Unit,
     navController: NavController
 ) {
     val announce = announcements.announcements
+
     if (announce.isNotEmpty()) {
-        LazyVerticalGrid(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(vertical = 15.dp),
-            content = {
-                items(15) {
-                    Card(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .clickable {
-                                selectAnnouncementCallback.invoke(it)
-                                navigateCallback.invoke(
-                                    navController,
-                                    AnnouncementsScreenRoute.DetailAnimalRoute
-                                )
-                            },
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = 8.dp
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.SpaceBetween
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
+            onRefresh = refreshCallback
+        ) {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp),
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(vertical = 15.dp),
+                content = {
+                    items(announce.size) {
+                        Card(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clickable {
+                                    selectAnnouncementCallback.invoke(announce[it])
+                                    navigateCallback.invoke(
+                                        navController,
+                                        AnnouncementsScreenRoute.DetailAnimalRoute
+                                    )
+                                },
+                            shape = RoundedCornerShape(8.dp),
+                            elevation = 8.dp
                         ) {
-                            BoxWithConstraints(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(backgroundPhotoColor)
-                            ) {
-                                Image(
-                                    modifier = Modifier.height(maxWidth),
-                                    painter = rememberAsyncImagePainter(
-                                        model = announcements.announcements.first().imageUrl
-                                            ?: R.drawable.ic_image_field
-                                    ),
-                                    contentDescription = null
-                                )
-                            }
                             Column(
-                                modifier = Modifier.padding(14.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
-                                    text = announcements.announcements.first().title,
-                                    style = titleAnnounceTextStyle,
-                                    maxLines = 1
-                                )
-                                Text(
-                                    modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
-                                    text = announcements.announcements.first().description,
-                                    style = descriptionAnnounceTextStyle,
-                                    maxLines = 2
-                                )
-                                Row {
+                                BoxWithConstraints(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(backgroundPhotoColor)
+                                ) {
                                     Image(
-                                        modifier = Modifier.height(21.dp),
-                                        painter = painterResource(id = R.drawable.ic_pet_marker),
-                                        contentDescription = null
+                                        modifier = Modifier.height(maxWidth),
+                                        painter = rememberAsyncImagePainter(
+                                            model = announcements.announcements[it].imageUrl
+                                                ?: R.drawable.ic_image_field
+                                        ),
+                                        contentDescription = null,
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier.padding(14.dp),
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = announcements.announcements[it].title,
+                                        style = titleAnnounceTextStyle,
+                                        maxLines = 1
                                     )
                                     Text(
-                                        text = "${announcements.announcements.first().geoPosition.lat} ${announcements.announcements.first().geoPosition.lng}",
+                                        modifier = Modifier.padding(top = 4.dp, bottom = 7.dp),
+                                        text = announcements.announcements[it].description,
                                         style = descriptionAnnounceTextStyle,
-                                        color = placeHolderColor,
                                         maxLines = 2
                                     )
+                                    Row {
+                                        Image(
+                                            modifier = Modifier.height(21.dp),
+                                            painter = painterResource(id = R.drawable.ic_pet_marker),
+                                            contentDescription = null
+                                        )
+                                        Text(
+                                            text = "${announcements.announcements[it].geoPosition.lat} ${announcements.announcements[it].geoPosition.lng}",
+                                            style = descriptionAnnounceTextStyle,
+                                            color = placeHolderColor,
+                                            maxLines = 2
+                                        )
 
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            })
+            )
+        }
     }
     if (announcements.isLoading) {
         CircularProgressIndicator(color = petShelterBlue)
@@ -229,8 +247,13 @@ fun AuthTabsContent(
     tabs: List<AnimalsTabItem>,
     pagerState: PagerState,
     announcements: AnnouncementsListState,
+    listDogs: AnnouncementsListState,
+    listCats: AnnouncementsListState,
+    listOther: AnnouncementsListState,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback: (Int) -> Unit,
+    selectAnnouncementCallback: (Announcement) -> Unit,
+    refreshCallback: () -> Unit,
+    isRefreshing: Boolean,
     navController: NavController
 ) {
 
@@ -245,30 +268,38 @@ fun AuthTabsContent(
                     announcements,
                     navigateCallback,
                     selectAnnouncementCallback,
+                    isRefreshing,
+                    refreshCallback,
                     navController
                 )
             }
             is AnimalsTabItem.Dogs -> {
                 ListAnnouncements(
-                    announcements,
+                    listDogs,
                     navigateCallback,
                     selectAnnouncementCallback,
+                    isRefreshing,
+                    refreshCallback,
                     navController
                 )
             }
             is AnimalsTabItem.Cats -> {
                 ListAnnouncements(
-                    announcements,
+                    listCats,
                     navigateCallback,
                     selectAnnouncementCallback,
+                    isRefreshing,
+                    refreshCallback,
                     navController
                 )
             }
             is AnimalsTabItem.Other -> {
                 ListAnnouncements(
-                    announcements,
+                    listOther,
                     navigateCallback,
                     selectAnnouncementCallback,
+                    isRefreshing,
+                    refreshCallback,
                     navController
                 )
             }
@@ -284,7 +315,11 @@ fun AnnouncementTabScreenPreview() {
         AnnouncementTabScreen(
             AnnouncementTabUiState(
                 animalsTabs = MutableLiveData(""),
-                animalsState = MutableLiveData(AnnouncementsListState())
+                animalsState = MutableLiveData(AnnouncementsListState()),
+                listDogs = MutableLiveData(AnnouncementsListState()),
+                listCats = MutableLiveData(AnnouncementsListState()),
+                listOther = MutableLiveData(AnnouncementsListState()),
+                isRefreshing = MutableLiveData(false)
             ),
             navController = rememberNavController(),
             { w, t -> },

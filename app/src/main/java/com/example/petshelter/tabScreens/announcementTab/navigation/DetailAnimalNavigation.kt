@@ -26,7 +26,7 @@ fun AnnouncementsAnimalNavigation(){
                 navController,
                 viewModel::navigateTo,
                 viewModel::selectAnnouncementCallback,
-                viewModel::getAnnouncements
+                viewModel::initAnnouncement
             )
         }
 

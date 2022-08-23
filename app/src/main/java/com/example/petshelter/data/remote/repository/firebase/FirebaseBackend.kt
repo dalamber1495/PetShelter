@@ -3,14 +3,22 @@ package com.example.petshelter.data.remote.repository.firebase
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import coil.Coil
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.example.petshelter.common.Resource
 import com.example.petshelter.domain.repository.firebase.FirebaseRepository
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 const val FIREBASE_STORAGE = "gs://lost-pets-e8cae.appspot.com/"
 
-class FirebaseBackend :FirebaseRepository{
+class FirebaseBackend @Inject constructor(
+) :FirebaseRepository{
 
 
         override suspend fun downloadImage(uri:String):Uri?{
@@ -24,7 +32,10 @@ class FirebaseBackend :FirebaseRepository{
             val uriImg = uriRef.reference.child(uri.parseNameUrl()).downloadUrl.await()
             Log.d("TAG", "downloadImageCallback: Successfully uploaded image")
             uriImg
-        } catch (e: Exception) {
+        } catch (e: StorageException) {
+            Log.e("TAG", "downloadImageCallback Storage Exception: ${e.message}")
+            uri.toUri()
+        }catch (e:Exception){
             Log.e("TAG", "downloadImageCallback: ${e.message}")
             "error".toUri()
         }
