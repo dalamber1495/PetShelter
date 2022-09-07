@@ -1,33 +1,28 @@
 package com.example.petshelter.tabScreens.createAnnouncementTab.viewModel
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.petshelter.domain.repository.localRepository.UserDataRepository
+import com.example.petshelter.domain.useCases.PostAnnouncementUseCase
 import com.example.petshelter.geo.LocationLiveData
 import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.AnimalCardState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalInfoUiState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
-import com.google.android.gms.location.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateAnnouncementTabViewModel @Inject constructor(
     val appNavigation: AppNavigation,
-    val locationLiveData: LocationLiveData
+    val locationLiveData: LocationLiveData,
+    val postAnnouncementUseCase: PostAnnouncementUseCase,
+    val userDataRepository: UserDataRepository
 ) : ViewModel() {
 
     private val screenBusy = MutableLiveData(false)
@@ -38,7 +33,7 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     private val titleText = MutableLiveData("")
     private val descriptionText = MutableLiveData("")
     private val secondStepLocateData = MutableLiveData(SecondStepLocateData())
-    private val avatarUri = MutableLiveData<Uri>()
+    private val avatarUri = MutableLiveData<Uri?>()
     private val errorMessage = MutableLiveData("")
 
     val uiState = FillAnimalInfoUiState(
@@ -55,15 +50,17 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     )
 
     fun defaultValuesSelect(
-        firstStepFilled: Boolean = false,
-        secondStepFilled: Boolean = false,
-
-        ) {
+    ) {
         screenBusy.postValue(false)
-        firstStepReady.postValue(firstStepFilled)
-        secondStepReady.postValue(secondStepFilled)
-        thirdStepReady.postValue(false)
-        errorMessage.postValue("")
+        userDataRepository.getFirstScreenPhotoUri()?.let { it ->
+            Log.e("TAG", "defaultValuesSelect: $it")
+            avatarUri.postValue(it)
+            firstStepReady.postValue(true)
+            userDataRepository.getSecondScreenLocate()?.let { locate ->
+                secondStepLocateData.postValue(locate)
+                secondStepReady.postValue(true)
+            }
+        }
     }
 
     fun checkPersonalInfoState() {
@@ -104,20 +101,29 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     }
 
     fun firstStepReady() {
-        CoroutineScope(Dispatchers.IO).launch {
-//            secondStepLocateData.postValue(locationLiveData.getCurrentPosition())
-        }
+        userDataRepository.saveFirstScreenPhotoUri(uri = avatarUri.value!!)
         firstStepReady.postValue(true)
 
     }
 
     fun secondStepReady(secondStepLocalData: SecondStepLocateData) {
+        userDataRepository.saveSecondScreenLocate(secondStepLocalData)
+        secondStepLocateData.postValue(secondStepLocalData)
         secondStepReady.postValue(true)
     }
 
-    fun markerPositionMove() {
-        CoroutineScope(Dispatchers.IO).launch {
-            secondStepLocateData.postValue(locationLiveData.getCurrentPosition())
+    fun markerPositionMove(myPosition:Boolean,move: (SecondStepLocateData)-> Unit ) {
+        Log.e("TAG", "markerPositionMove: $myPosition", )
+        viewModelScope.launch {
+            val locateData = locationLiveData.getCurrentPosition()
+            if (!myPosition) {
+                secondStepLocateData.postValue(
+                    userDataRepository.getSecondScreenLocate()
+                        ?: locateData
+                )
+            } else {
+                move.invoke(locateData)
+            }
         }
     }
 

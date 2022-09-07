@@ -1,5 +1,6 @@
 package com.example.petshelter.domain.useCases
 
+import android.net.Uri
 import androidx.core.net.toUri
 import com.example.petshelter.common.Resource
 import com.example.petshelter.data.remote.dto.AnnouncementDto
@@ -22,8 +23,16 @@ class PostAnnouncementUseCase @Inject constructor(
     operator fun invoke(announcement: Announcement): Flow<Resource<Announcement>> = flow {
         try {
             emit(Resource.Loading())
-            firebaseBackend.uploadImage(announcement.imageUrl!!, announcement.id)
-            val announcementsDto = repository.postAnnouncement(announcement.toDtoPost(),userDataRepository.getLoggedUserTokens().accessToken)
+            val uploadRef = firebaseBackend.uploadImage(announcement.imageUrl!!)
+            val announcementPost =
+                when (uploadRef) {
+                    is Resource.Success -> announcement.toDtoPost(uploadRef.data)
+                    else -> announcement.toDtoPost(announcement.imageUrl)
+                }
+            val announcementsDto = repository.postAnnouncement(
+                announcementPost,
+                userDataRepository.getLoggedUserTokens().accessToken
+            )
             emit(Resource.Success(announcementsDto.toAnnouncement()))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
@@ -32,11 +41,11 @@ class PostAnnouncementUseCase @Inject constructor(
         }
     }
 
-    private fun Announcement.toDtoPost(): AnnouncementDtoPost =
+    private fun Announcement.toDtoPost(imageUrl: Uri?): AnnouncementDtoPost =
         AnnouncementDtoPost(
             this.description,
             this.geoPosition,
-            this.imageUrl.toString(),
+            imageUrl.toString(),
             this.petType,
             this.title
         )

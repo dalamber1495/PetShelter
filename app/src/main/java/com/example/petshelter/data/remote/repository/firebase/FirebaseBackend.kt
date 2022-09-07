@@ -41,11 +41,13 @@ class FirebaseBackend @Inject constructor(
         }
     }
 
-    override suspend fun uploadImage(uri: Uri, id:String):Resource<Uri?>{
+    override suspend fun uploadImage(uri: Uri):Resource<Uri?>{
         return try {
+            val id = System.currentTimeMillis()
             val uriRef = FirebaseStorage.getInstance(FIREBASE_STORAGE)
-            uriRef.reference.child("/${id}/1.jpeg").putFile(uri).await()
-            Resource.Success(uri)
+            val upLoadUri = uriRef.reference.child("/${id}.jpeg").putFile(uri).await().metadata?.path
+
+            Resource.Success(upLoadUri?.toUri())
         } catch (e: Exception) {
             Log.e("TAG", "uploadImage: ${e.message}")
             Resource.Error(message = e.message )

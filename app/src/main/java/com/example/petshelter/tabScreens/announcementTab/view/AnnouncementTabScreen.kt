@@ -54,7 +54,7 @@ fun AnnouncementTabScreen(
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
     selectAnnouncementCallback: (Announcement) -> Unit,
-    initAnnouncement:()->Unit
+    initAnnouncement: () -> Unit
 ) {
 
     val announcements = uiState.animalsState.observeAsState(AnnouncementsListState())
@@ -155,11 +155,12 @@ fun ListAnnouncements(
 ) {
     val announce = announcements.announcements
 
-    if (announce.isNotEmpty()) {
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
-            onRefresh = refreshCallback
-        ) {
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
+        onRefresh = refreshCallback
+    ) {
+//        if (announce.isNotEmpty()) {
+
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxSize()
@@ -234,10 +235,12 @@ fun ListAnnouncements(
                     }
                 }
             )
-        }
+//        }
     }
     if (announcements.isLoading) {
-        CircularProgressIndicator(color = petShelterBlue)
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = petShelterBlue)
+        }
     }
 }
 
@@ -262,6 +265,7 @@ fun AuthTabsContent(
         count = tabs.size,
         modifier = Modifier.fillMaxHeight()
     ) { page ->
+
         when (tabs[page]) {
             is AnimalsTabItem.All -> {
                 ListAnnouncements(

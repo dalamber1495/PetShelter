@@ -69,10 +69,10 @@ class AnnouncementTabViewModel @Inject constructor(
                 }
                 is Resource.Loading -> {
                     when (petType) {
-                        "dog" -> listDogs.postValue(AnnouncementsListState(isLoading = true))
-                        "cat" -> listCats.postValue(AnnouncementsListState(isLoading = true))
-                        "other" -> listOther.postValue(AnnouncementsListState(isLoading = true))
-                        else -> animalsState.postValue(AnnouncementsListState(isLoading = true))
+                        "dog" -> listDogs.postValue(listDogs.value?.copy(isLoading = true))
+                        "cat" -> listCats.postValue(listCats.value?.copy(isLoading = true))
+                        "other" -> listOther.postValue(listOther.value?.copy(isLoading = true))
+                        else -> animalsState.postValue(animalsState.value?.copy(isLoading = true))
                     }
                 }
                 is Resource.Error -> {

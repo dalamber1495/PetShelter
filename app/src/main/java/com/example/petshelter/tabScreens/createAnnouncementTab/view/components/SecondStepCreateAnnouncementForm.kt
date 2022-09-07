@@ -26,8 +26,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
+import kotlin.reflect.KFunction2
 
 
 const val TAG = "Second Step Form"
@@ -36,12 +39,13 @@ const val TAG = "Second Step Form"
 @Composable
 fun SecondStepCreateAnnouncementForm(
     secondStepLocateData: SecondStepLocateData,
-    markerPositionCallback: () -> Unit,
-    secondStepReadyCallback: (SecondStepLocateData) -> Unit
+    markerPositionCallback: (Boolean, (SecondStepLocateData) -> Unit) -> Unit,
+    secondStepReadyCallback: (SecondStepLocateData) -> Unit,
+    backArrowCallback: () -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val coordinate = LatLng(secondStepLocateData.latPhoto!!, secondStepLocateData.lngPhoto!!)
-    val defaultCameraPosition = CameraPosition.fromLatLngZoom(coordinate, 18f)
+//    val coordinate = LatLng(secondStepLocateData.latPhoto!!, secondStepLocateData.lngPhoto!!)
+//    val defaultCameraPosition = CameraPosition.fromLatLngZoom(coordinate, 18f)
 
     val permissionStates = rememberMultiplePermissionsState(
         listOf(
@@ -51,7 +55,12 @@ fun SecondStepCreateAnnouncementForm(
     )
     var isMapLoaded by remember { mutableStateOf(false) }
     val cameraPositionState = rememberCameraPositionState {
-        position = defaultCameraPosition
+        position = CameraPosition.fromLatLngZoom(
+            LatLng(
+                secondStepLocateData.latPhoto!!,
+                secondStepLocateData.lngPhoto!!
+            ), 18f
+        )
     }
     val permissionDialog = remember {
         mutableStateOf(false)
@@ -65,7 +74,13 @@ fun SecondStepCreateAnnouncementForm(
                         Manifest.permission.ACCESS_FINE_LOCATION -> {
                             when {
                                 it.status.isGranted -> {
-                                    markerPositionCallback.invoke()
+                                    markerPositionCallback.invoke(false){locate->
+                                        cameraPositionState.move(
+                                            CameraUpdateFactory.newLatLng(
+                                                LatLng(locate.latPhoto!!, locate.lngPhoto!!)
+                                            )
+                                        )
+                                    }
                                 }
                                 it.status.shouldShowRationale -> {
                                     permissionStates.launchMultiplePermissionRequest()
@@ -92,7 +107,11 @@ fun SecondStepCreateAnnouncementForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        TopBarCreateAnnouncement(backArrowShow = true, textTopBar = "Где вы видели питомца?")
+        TopBarCreateAnnouncement(
+            backArrowShow = true,
+            textTopBar = "Где вы видели питомца?",
+            backArrowCallback = backArrowCallback
+        )
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMapView(
                 modifier = Modifier.matchParentSize(),
@@ -143,15 +162,21 @@ fun SecondStepCreateAnnouncementForm(
                     image = R.drawable.ic_location_on,
                     imageSize = 60.dp,
                     clickCallback = {
-                        cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                            coordinate, 18f
-                        )
                         permissionStates.permissions.forEach {
                             when (it.permission) {
                                 Manifest.permission.ACCESS_FINE_LOCATION -> {
                                     when {
                                         it.status.isGranted -> {
-                                            markerPositionCallback.invoke()
+                                            markerPositionCallback.invoke(true) { locate ->
+                                                cameraPositionState.move(
+                                                    CameraUpdateFactory.newLatLng(
+                                                        LatLng(locate.latPhoto!!, locate.lngPhoto!!)
+                                                    )
+                                                )
+                                            }
+//                                            cameraPositionState.position = CameraPosition.fromLatLngZoom(
+//                                                coordinate, 18f
+//                                            )
                                         }
                                         it.status.shouldShowRationale -> {
                                             permissionStates.launchMultiplePermissionRequest()
@@ -182,7 +207,14 @@ fun SecondStepCreateAnnouncementForm(
                         .height(56.dp),
                     text = "Подтвердить",
                     image = R.drawable.ic_done,
-                    clickCallback = { secondStepReadyCallback.invoke(SecondStepLocateData()) }
+                    clickCallback = {
+                        secondStepReadyCallback.invoke(
+                            SecondStepLocateData(
+                                cameraPositionState.position.target.latitude,
+                                cameraPositionState.position.target.longitude
+                            )
+                        )
+                    }
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 

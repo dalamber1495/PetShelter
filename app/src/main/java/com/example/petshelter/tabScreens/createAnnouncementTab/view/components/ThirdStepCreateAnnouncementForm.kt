@@ -16,7 +16,8 @@ import com.example.petshelter.ui.theme.PetShelterTheme
 @Composable
 fun ThirdStepCreateAnnouncementForm(
     animalCardState: AnimalCardState,
-    animalSelected:(AnimalCardState)->Unit
+    animalSelected:(AnimalCardState)->Unit,
+    backArrowCallback:()->Unit
 ) {
     Column(
         modifier = Modifier
@@ -25,7 +26,7 @@ fun ThirdStepCreateAnnouncementForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        TopBarCreateAnnouncement(backArrowShow = true, textTopBar = "Опишите питомца")
+        TopBarCreateAnnouncement(backArrowShow = true, textTopBar = "Опишите питомца", backArrowCallback = backArrowCallback)
         Spacer(modifier = Modifier.height(24.dp))
         Row(
             modifier = Modifier
@@ -85,6 +86,6 @@ fun ThirdStepCreateAnnouncementForm(
 @Composable
 fun ThirdStepCreateAnnouncementFormPreview() {
     PetShelterTheme {
-        ThirdStepCreateAnnouncementForm(AnimalCardState.Cat,{})
+        ThirdStepCreateAnnouncementForm(AnimalCardState.Cat,{},{})
     }
 }

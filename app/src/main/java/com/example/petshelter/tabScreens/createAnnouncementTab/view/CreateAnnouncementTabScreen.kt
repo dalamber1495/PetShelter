@@ -1,30 +1,19 @@
 package com.example.petshelter.tabScreens.createAnnouncementTab.view
 
-import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
-import com.example.petshelter.R
-import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.AnimalCardState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalInfoUiState
-import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.FirstStepCreateAnnouncementForm
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.SecondStepCreateAnnouncementForm
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.ThirdStepCreateAnnouncementForm
-import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.TopBarCreateAnnouncement
 import com.example.petshelter.ui.theme.PetShelterTheme
 
 @Composable
@@ -33,9 +22,10 @@ fun CreateAnnouncementTabScreen(
     addPhotoCallback: (Uri?) -> Unit,
     firstStepReadyCallback: () -> Unit,
     secondStepReadyCallback: (SecondStepLocateData) -> Unit,
-    markerPositionCallback: () -> Unit,
-    animalSelectedCallback:(AnimalCardState)->Unit
-
+    markerPositionCallback: (Boolean, (SecondStepLocateData) -> Unit) -> Unit,
+    animalSelectedCallback: (AnimalCardState) -> Unit,
+    backArrowCallback: () -> Unit,
+    defaultValues: () -> Unit
 ) {
     val firstStep = uiState.firstStep.observeAsState(initial = false)
     val secondStep = uiState.secondStep.observeAsState(initial = false)
@@ -46,9 +36,9 @@ fun CreateAnnouncementTabScreen(
         uiState.secondStepLocateData.observeAsState(initial = SecondStepLocateData())
     val animalCardSelected = uiState.animalSelected.observeAsState(initial = AnimalCardState.Cat)
 
-//    LaunchedEffect("CheckStepsState") {
-//        checkStepsState.invoke()
-//    }
+    LaunchedEffect("CheckStepsState") {
+        defaultValues.invoke()
+    }
 
 
     Column {
@@ -66,10 +56,11 @@ fun CreateAnnouncementTabScreen(
                     secondStepLocateData = secondStepLocateData.value,
                     markerPositionCallback = markerPositionCallback,
                     secondStepReadyCallback = secondStepReadyCallback,
+                    backArrowCallback = backArrowCallback,
                 )
             }
             firstStep.value && secondStep.value && !thirdStep.value -> {
-                ThirdStepCreateAnnouncementForm(animalCardSelected.value,animalSelectedCallback)
+                ThirdStepCreateAnnouncementForm(animalCardSelected.value,animalSelectedCallback,backArrowCallback)
             }
         }
     }
@@ -101,8 +92,10 @@ fun CreateAnnouncementTabScreenPreview() {
             {},
             {},
             {},
-            {},
+            {i,d->},
             { SecondStepLocateData() },
+            {},
+            {},
         )
     }
 }
