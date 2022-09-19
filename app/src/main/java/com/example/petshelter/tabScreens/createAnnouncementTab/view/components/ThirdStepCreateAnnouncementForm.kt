@@ -16,8 +16,13 @@ import com.example.petshelter.ui.theme.PetShelterTheme
 @Composable
 fun ThirdStepCreateAnnouncementForm(
     animalCardState: AnimalCardState,
-    animalSelected:(AnimalCardState)->Unit,
-    backArrowCallback:()->Unit
+    animalSelected: (AnimalCardState) -> Unit,
+    backArrowCallback: () -> Unit,
+    title:String,
+    descriptionText:String,
+    setTitleCallback:(String)->Unit,
+    setDescriptionCallback:(String)->Unit,
+    postAnnouncementCallback:()->Unit
 ) {
     Column(
         modifier = Modifier
@@ -26,7 +31,11 @@ fun ThirdStepCreateAnnouncementForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        TopBarCreateAnnouncement(backArrowShow = true, textTopBar = "Опишите питомца", backArrowCallback = backArrowCallback)
+        TopBarCreateAnnouncement(
+            backArrowShow = true,
+            textTopBar = "Опишите питомца",
+            backArrowCallback = backArrowCallback
+        )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
             modifier = Modifier
@@ -37,44 +46,51 @@ fun ThirdStepCreateAnnouncementForm(
         ) {
             AnimalCard(
                 selected = animalCardState == AnimalCardState.Cat,
-                image = R.drawable.ic_cat_card_selected ,
+                image = R.drawable.ic_cat_card_selected,
                 text = "Кошка",
-                onClick = {animalSelected.invoke(AnimalCardState.Cat)}
+                onClick = { animalSelected.invoke(AnimalCardState.Cat) }
             )
             AnimalCard(
                 selected = animalCardState == AnimalCardState.Dog,
                 image = R.drawable.ic_dog_card_selected,
                 text = "Собака",
-                onClick = {animalSelected.invoke(AnimalCardState.Dog)}
+                onClick = { animalSelected.invoke(AnimalCardState.Dog) }
             )
             AnimalCard(
                 selected = animalCardState == AnimalCardState.Other,
-                image =  R.drawable.ic_other_card_selected,
+                image = R.drawable.ic_other_card_selected,
                 text = "Другие",
-                onClick = {animalSelected.invoke(AnimalCardState.Other)}
+                onClick = { animalSelected.invoke(AnimalCardState.Other) }
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
-        FormField(modifier = Modifier
-            .height(56.dp), placeHolder = "Название объявления") {
-        }
+        FormField(
+            modifier = Modifier
+                .height(56.dp),
+            placeHolder = "Название объявления",
+            text = title,
+            valueCallback = setTitleCallback
+        )
         Spacer(modifier = Modifier.height(32.dp))
-        FormField(modifier = Modifier
-            .fillMaxHeight(0.6f), placeHolder = "Описание питомца") {
-        }
+        FormField(
+            modifier = Modifier
+                .fillMaxHeight(0.6f),
+            placeHolder = "Описание питомца",
+            text = descriptionText,
+            valueCallback = setDescriptionCallback
+        )
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             PetShelterBtn(
                 modifier = Modifier
                     .height(56.dp)
                     .wrapContentWidth(),
                 text = "Разместить объявление",
                 image = R.drawable.ic_done,
-                clickCallback = {}
+                clickCallback = postAnnouncementCallback
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -86,6 +102,6 @@ fun ThirdStepCreateAnnouncementForm(
 @Composable
 fun ThirdStepCreateAnnouncementFormPreview() {
     PetShelterTheme {
-        ThirdStepCreateAnnouncementForm(AnimalCardState.Cat,{},{})
+        ThirdStepCreateAnnouncementForm(AnimalCardState.Cat, {}, {},"","",{},{},{})
     }
 }

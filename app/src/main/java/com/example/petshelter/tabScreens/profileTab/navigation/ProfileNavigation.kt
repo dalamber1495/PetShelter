@@ -22,6 +22,7 @@ fun ProfileNavigation(){
                 viewModel::addPhotoCallback,
                 viewModel.uiState,
                 navController,
+                viewModel::logoutCallback,
                 viewModel::navigateTo
             )
         }

@@ -59,7 +59,7 @@ fun LogoutDialog(
                                 modifier = Modifier
                                     .width(140.dp)
                                     .height(56.dp),
-                                onClick = toggleDialogDisplayCallback,
+                                onClick = logoutBtnCallback,
                             ) {
                                 Text(text = "Выйти", style = dialogBtnTextStyle)
                             }

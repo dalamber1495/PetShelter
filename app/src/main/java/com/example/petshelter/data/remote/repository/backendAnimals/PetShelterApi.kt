@@ -25,5 +25,5 @@ interface PetShelterApi {
     suspend fun postAnnouncements(
         @Header("Authorization") auth: String,
         @Body body: AnnouncementDtoPost
-    ): AnnouncementDto
+    ): List<AnnouncementDto>
 }

@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.petshelter.common.Resource
+import com.example.petshelter.data.remote.dto.GeoPosition
+import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.domain.useCases.PostAnnouncementUseCase
 import com.example.petshelter.geo.LocationLiveData
@@ -14,6 +17,8 @@ import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalI
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -63,23 +68,12 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         }
     }
 
-    fun checkPersonalInfoState() {
-        try {
-            screenBusy.postValue(true)
+    fun setTitleText(title: String) {
+        titleText.postValue(title)
+    }
 
-//            val personalData = userDataRepository.getUserPersonalData()
-//            val firstStepComplete = firstStepCallback(personalData)
-//            val secondStepComplete = secondStepReady(personalData)
-            val thirdStepComplete = false
-
-//            firstStepReady.postValue(firstStepComplete)
-//            secondStepReady.postValue(secondStepComplete)
-            thirdStepReady.postValue(thirdStepComplete)
-        } catch (exception: Exception) {
-            errorMessage.postValue("Error : ${exception.message}")
-        } finally {
-            screenBusy.postValue(false)
-        }
+    fun setDescriptionText(description: String) {
+        descriptionText.postValue(description)
     }
 
     fun backArrowCallback() {
@@ -112,8 +106,8 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         secondStepReady.postValue(true)
     }
 
-    fun markerPositionMove(myPosition:Boolean,move: (SecondStepLocateData)-> Unit ) {
-        Log.e("TAG", "markerPositionMove: $myPosition", )
+    fun markerPositionMove(myPosition: Boolean, move: (SecondStepLocateData) -> Unit) {
+        Log.e("TAG", "markerPositionMove: $myPosition")
         viewModelScope.launch {
             val locateData = locationLiveData.getCurrentPosition()
             if (!myPosition) {
@@ -132,11 +126,35 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         animalSelected.postValue(animalCardState)
     }
 
-    private fun firstStepCallback(animalData: FirstStepAddPhotoData): Boolean {
-        return false
-    }
+    fun postAnnouncementBtn() {
+        Log.e("TAG", "postAnnouncementBtn: ", )
+        postAnnouncementUseCase.invoke(
+            Announcement(
+                description = descriptionText.value ?: "description",
+                geoPosition = GeoPosition(
+                    secondStepLocateData.value?.latPhoto!!,
+                    secondStepLocateData.value?.lngPhoto!!
+                ), id = "",
+                imageUrl = avatarUri.value,
+                petType = animalSelected.value?.animal!!,
+                title = titleText.value?:"title"
+            )
+        ).onEach {  result ->
+            when(result){
+                is Resource.Success ->{
+                    screenBusy.postValue(false)
+                    Log.e("TAG", "postAnnouncementBtn: ${result.data}", )
+                }
+                is Resource.Loading ->{
+                    screenBusy.postValue(true)
+                    Log.e("TAG", "postAnnouncementBtn: LOADING", )
+                }
+                is Resource.Error ->{
+                    screenBusy.postValue(false)
+                    Log.e("TAG", "postAnnouncementBtn: ${result.message}", )
+                }
+            }
 
-    private fun secondStepReady(animalData: FirstStepAddPhotoData): Boolean {
-        return false
+        }.launchIn(viewModelScope)
     }
 }

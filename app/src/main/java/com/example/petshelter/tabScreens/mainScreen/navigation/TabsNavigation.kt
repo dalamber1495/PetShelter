@@ -30,7 +30,10 @@ fun TabsNavigation(navController: NavHostController) {
                 viewModel::markerPositionMove,
                 viewModel::animalSelected,
                 viewModel::backArrowCallback,
-                viewModel::defaultValuesSelect
+                viewModel::defaultValuesSelect,
+                viewModel::setTitleText,
+                viewModel::setDescriptionText,
+                viewModel::postAnnouncementBtn
             )
         }
         composable(route = MainScreenTabRoute.ProfileTab.name) {

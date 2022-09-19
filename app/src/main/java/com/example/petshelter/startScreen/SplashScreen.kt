@@ -39,7 +39,7 @@ fun SplashScreen(
                         .getInterpolation(it)
                 }
             ))
-        delay(2000L)
+        delay(500L)
         navController.navigate(startingGraph, NavOptions.Builder().setPopUpTo(0, false).build())
     }
 

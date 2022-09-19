@@ -23,4 +23,5 @@ interface UserDataRepository {
 
     fun saveSecondScreenLocate(locateData: SecondStepLocateData?)
     fun getSecondScreenLocate():SecondStepLocateData?
+
 }

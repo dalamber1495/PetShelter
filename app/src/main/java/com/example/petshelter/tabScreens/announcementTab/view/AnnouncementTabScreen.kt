@@ -192,7 +192,8 @@ fun ListAnnouncements(
                                         .background(backgroundPhotoColor)
                                 ) {
                                     Image(
-                                        modifier = Modifier.height(maxWidth),
+                                        modifier = Modifier.height(maxWidth)
+                                            .width(maxWidth),
                                         painter = rememberAsyncImagePainter(
                                             model = announcements.announcements[it].imageUrl
                                                 ?: R.drawable.ic_image_field

@@ -11,10 +11,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.traceEventStart
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityOptionsCompat
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -39,6 +42,7 @@ import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
 import com.example.petshelter.ui.theme.PetShelterTheme
+import com.example.petshelter.ui.theme.Shapes
 import java.io.File
 import java.util.*
 
@@ -139,7 +143,8 @@ fun AnimalPhoto(
 
         Card(
             modifier = Modifier.wrapContentSize(),
-            elevation = 0.dp
+            elevation = 0.dp,
+            shape = RoundedCornerShape(0.dp)
         ) {
             SubcomposeAsyncImage(
                 model = photoUri,
@@ -217,7 +222,6 @@ fun takePhoto(
             setMinCropResultSize(150, 150)
         }
     )
-
 }
 
 @Preview

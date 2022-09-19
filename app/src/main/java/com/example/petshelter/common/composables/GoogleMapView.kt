@@ -33,7 +33,7 @@ fun GoogleMapView(
         )
     }
     var mapProperties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
+        mutableStateOf(MapProperties(mapType = MapType.NORMAL, isBuildingEnabled = true))
     }
     val markerImage = getBitmapFromVectorDrawable(LocalContext.current, R.drawable.ic_pet_marker)
 //    BitmapFactory.decodeResource(LocalContext.current.resources,R.drawable.ic_pet_marker)

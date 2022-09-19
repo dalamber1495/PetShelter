@@ -17,7 +17,7 @@ class AnnouncementRepositoryImpl @Inject constructor(
     override suspend fun postAnnouncement(
         announcementDto: AnnouncementDtoPost,
         auth: String
-    ): AnnouncementDto =
+    ): List<AnnouncementDto> =
         api.postAnnouncements(auth, announcementDto)
 
 }

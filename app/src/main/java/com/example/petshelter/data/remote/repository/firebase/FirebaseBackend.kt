@@ -16,6 +16,7 @@ import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
 const val FIREBASE_STORAGE = "gs://lost-pets-e8cae.appspot.com/"
+const val FIREBASE_URL ="https://firebasestorage.googleapis.com/v0/b/lost-pets-e8cae.appspot.com/o/"
 
 class FirebaseBackend @Inject constructor(
 ) :FirebaseRepository{
@@ -46,8 +47,8 @@ class FirebaseBackend @Inject constructor(
             val id = System.currentTimeMillis()
             val uriRef = FirebaseStorage.getInstance(FIREBASE_STORAGE)
             val upLoadUri = uriRef.reference.child("/${id}.jpeg").putFile(uri).await().metadata?.path
-
-            Resource.Success(upLoadUri?.toUri())
+            Log.e("TAG", "uploadImage: $FIREBASE_URL$upLoadUri", )
+            Resource.Success(FIREBASE_URL.plus(upLoadUri).toUri())
         } catch (e: Exception) {
             Log.e("TAG", "uploadImage: ${e.message}")
             Resource.Error(message = e.message )

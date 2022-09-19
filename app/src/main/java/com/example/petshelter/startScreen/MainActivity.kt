@@ -10,11 +10,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.navigation.graphs.authGraph
 import com.example.petshelter.navigation.graphs.mainFlowGraph
 import com.example.petshelter.navigation.routeObject.AppScreens
 import com.example.petshelter.navigation.routeObject.popRouteName
+import com.example.petshelter.ui.loggedUserGraph
 import com.example.petshelter.ui.notLoggedUserGraph
 import com.example.petshelter.ui.theme.PetShelterTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,12 +30,17 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: AppNavigation
 
+    @Inject
+    lateinit var userDataRepository: UserDataRepository
+
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val startingDestination = AppScreens.MainAppScreen.route
 
-        val startingGraph = notLoggedUserGraph
+
+        val startingGraph =
+            if (userDataRepository.isUserLoggedIn()) loggedUserGraph else notLoggedUserGraph
 
         setContent {
             val navigationController = rememberNavController()
@@ -55,14 +62,19 @@ class MainActivity : ComponentActivity() {
                 }.launchIn(this)
             }
 
-            NavHost(navController = navigationController,
-                startDestination = AppScreens.SplashScreen.route){
+            NavHost(
+                navController = navigationController,
+                startDestination = AppScreens.SplashScreen.route
+            ) {
 
                 authGraph(navigationController)
                 mainFlowGraph(navigationController)
 
-                composable(AppScreens.SplashScreen.route){
-                    SplashScreen(navController = navigationController,startingGraph = startingGraph)
+                composable(AppScreens.SplashScreen.route) {
+                    SplashScreen(
+                        navController = navigationController,
+                        startingGraph = startingGraph
+                    )
                 }
 
 

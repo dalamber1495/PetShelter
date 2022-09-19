@@ -1,6 +1,7 @@
 package com.example.petshelter.domain.useCases
 
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import com.example.petshelter.common.Resource
 import com.example.petshelter.data.remote.dto.AnnouncementDto
@@ -22,6 +23,7 @@ class PostAnnouncementUseCase @Inject constructor(
 ) {
     operator fun invoke(announcement: Announcement): Flow<Resource<Announcement>> = flow {
         try {
+            Log.e("TAG", "invoke: ", )
             emit(Resource.Loading())
             val uploadRef = firebaseBackend.uploadImage(announcement.imageUrl!!)
             val announcementPost =
@@ -31,9 +33,9 @@ class PostAnnouncementUseCase @Inject constructor(
                 }
             val announcementsDto = repository.postAnnouncement(
                 announcementPost,
-                userDataRepository.getLoggedUserTokens().accessToken
+                "Bearer ${userDataRepository.getLoggedUserTokens().accessToken}"
             )
-            emit(Resource.Success(announcementsDto.toAnnouncement()))
+            emit(Resource.Success(announcementsDto.first().toAnnouncement()))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {

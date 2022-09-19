@@ -54,6 +54,7 @@ fun ProfileTabScreen(
     addPhotoCallback: (Uri?) -> Unit,
     uiState: ProfileTabUiState,
     navController: NavController,
+    logoutBtnCallback: () -> Unit,
     navigateToCallback: (NavController, ProfileScreenRoute) -> Unit
 ) {
 
@@ -66,8 +67,9 @@ fun ProfileTabScreen(
 
     LogoutDialog(
         isDisplayed = showDialogLogout.value,
-        toggleDialogDisplayCallback = { showDialogLogout.value = false }) {
-    }
+        toggleDialogDisplayCallback = { showDialogLogout.value = false },
+        logoutBtnCallback = logoutBtnCallback
+    )
 
     Column(
         modifier = Modifier
@@ -219,6 +221,7 @@ fun ProfileTabScreenPreview() {
                 MutableLiveData("")
             ),
             NavController(LocalContext.current),
+            {},
             { de, ec -> }
         )
     }
