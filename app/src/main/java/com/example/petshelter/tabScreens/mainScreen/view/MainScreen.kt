@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.animalIdParam
 import com.example.petshelter.tabScreens.mainScreen.components.BottomBarItem
 import com.example.petshelter.tabScreens.mainScreen.components.MainPageBottomBar
 import com.example.petshelter.tabScreens.mainScreen.model.MainScreenUIState
@@ -28,7 +29,19 @@ fun MainScreen(
     val tabsNavigator = rememberNavController()
     val navBackStackEntry by tabsNavigator.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
+    val openDetailTab :(String)->Unit = {id ->
+        Log.e("TAG", "MainScreen: $id", )
+        val destination = BottomBarItem.AnnouncementTabItem
+        destination.createRoute(id)
+        tabsNavigator.navigate(BottomBarItem.AnnouncementTabItem.route){
+            this.popUpTo(0) {
+                inclusive = false
+                saveState = true
+            }
+        }
+        setTabRouteCallback(destination.route)
+        destination.createRoute(animalIdParam)
+    }
     Scaffold(
         bottomBar = {
             MainPageBottomBar(
@@ -52,7 +65,7 @@ fun MainScreen(
                 PaddingValues(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
             )
         ) {
-            TabsNavigation(navController = tabsNavigator)
+            TabsNavigation(navController = tabsNavigator, openDetailTab)
         }
     }
 

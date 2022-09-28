@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.example.petshelter.common.Resource
 import com.example.petshelter.data.remote.dto.GeoPosition
 import com.example.petshelter.domain.model.Announcement
@@ -14,7 +15,6 @@ import com.example.petshelter.geo.LocationLiveData
 import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.AnimalCardState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalInfoUiState
-import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -40,6 +40,8 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     private val secondStepLocateData = MutableLiveData(SecondStepLocateData())
     private val avatarUri = MutableLiveData<Uri?>()
     private val errorMessage = MutableLiveData("")
+    private lateinit var tabNavController:NavController
+    private lateinit var openDetailTab: (String)->Unit
 
     val uiState = FillAnimalInfoUiState(
         firstStep = firstStepReady,
@@ -54,6 +56,10 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         errorMessage = errorMessage
     )
 
+    fun setTabNavController(navController: NavController,openDetailTab: (String)->Unit){
+        tabNavController = navController
+        this.openDetailTab = openDetailTab
+    }
     fun defaultValuesSelect(
     ) {
         screenBusy.postValue(false)
@@ -127,14 +133,14 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     }
 
     fun postAnnouncementBtn() {
-        Log.e("TAG", "postAnnouncementBtn: ", )
         postAnnouncementUseCase.invoke(
             Announcement(
                 description = descriptionText.value ?: "description",
                 geoPosition = GeoPosition(
                     secondStepLocateData.value?.latPhoto!!,
                     secondStepLocateData.value?.lngPhoto!!
-                ), id = "",
+                ),
+                id = "",
                 imageUrl = avatarUri.value,
                 petType = animalSelected.value?.animal!!,
                 title = titleText.value?:"title"
@@ -143,15 +149,18 @@ class CreateAnnouncementTabViewModel @Inject constructor(
             when(result){
                 is Resource.Success ->{
                     screenBusy.postValue(false)
-                    Log.e("TAG", "postAnnouncementBtn: ${result.data}", )
+                    result.data?.id?.let { openDetailTab.invoke(it) }
+                    userDataRepository.saveFirstScreenPhotoUri(null)
+                    userDataRepository.saveSecondScreenLocate(null)
+                    Log.e("TAG", "postAnnouncementBtn: ${result.data}" )
                 }
                 is Resource.Loading ->{
                     screenBusy.postValue(true)
-                    Log.e("TAG", "postAnnouncementBtn: LOADING", )
+                    Log.e("TAG", "postAnnouncementBtn: LOADING" )
                 }
                 is Resource.Error ->{
                     screenBusy.postValue(false)
-                    Log.e("TAG", "postAnnouncementBtn: ${result.message}", )
+                    Log.e("TAG", "postAnnouncementBtn: ${result.message}" )
                 }
             }
 

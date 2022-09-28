@@ -18,7 +18,7 @@ interface UserDataRepository {
     fun clearLocalData()
 
 
-    fun saveFirstScreenPhotoUri(uri:Uri)
+    fun saveFirstScreenPhotoUri(uri:Uri?)
     fun getFirstScreenPhotoUri():Uri?
 
     fun saveSecondScreenLocate(locateData: SecondStepLocateData?)

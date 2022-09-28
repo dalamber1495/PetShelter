@@ -72,10 +72,13 @@ class PreferencesUserData @Inject constructor(
             .apply()
     }
 
-    override fun saveFirstScreenPhotoUri(uri: Uri) {
-        sharedPreferences.edit()
-            .putString(photoUriName, uri.toString())
-            .apply()
+    override fun saveFirstScreenPhotoUri(uri: Uri?) {
+        if(uri !=null) {
+            sharedPreferences.edit()
+                .putString(photoUriName, uri.toString())
+                .apply()
+        }else
+            sharedPreferences.edit().remove(photoUriName).apply()
     }
 
     override fun getFirstScreenPhotoUri(): Uri? {
@@ -83,8 +86,11 @@ class PreferencesUserData @Inject constructor(
     }
 
     override fun saveSecondScreenLocate(locateData: SecondStepLocateData?) {
-        val locateJson = gson.toJson(locateData)
-        sharedPreferences.edit().putString(locateDataName, locateJson).apply()
+        if (locateData != null) {
+            val locateJson = gson.toJson(locateData)
+            sharedPreferences.edit().putString(locateDataName, locateJson).apply()
+        }else
+            sharedPreferences.edit().remove(locateDataName).apply()
     }
 
     override fun getSecondScreenLocate(): SecondStepLocateData? {

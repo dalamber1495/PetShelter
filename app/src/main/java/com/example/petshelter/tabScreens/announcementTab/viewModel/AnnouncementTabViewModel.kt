@@ -7,30 +7,30 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.petshelter.common.Resource
 import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.model.AnnouncementsListState
 import com.example.petshelter.domain.useCases.GetAnnouncementsUseCase
-import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.tabScreens.announcementTab.common.AnimalsTabItem
 import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementTabUiState
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
-import com.example.petshelter.tabScreens.profileTab.navigation.routeObject.ProfileScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class AnnouncementTabViewModel @Inject constructor(
     val getAnnouncementsUseCase: GetAnnouncementsUseCase
 ) : ViewModel() {
+
+    private val _snackbarState = MutableStateFlow<Int?>(null)
+    val snackbarState: StateFlow<Int?> = _snackbarState.asStateFlow()
+    private val _detailId = MutableStateFlow<Int?>(null)
+    val detailId: StateFlow<Int?> = _detailId.asStateFlow()
     private val animalsState = MutableLiveData(AnnouncementsListState())
     private val listDogs = MutableLiveData(AnnouncementsListState())
     private val listCats = MutableLiveData(AnnouncementsListState())
+    private lateinit var navController: NavController
     private val listOther = MutableLiveData(AnnouncementsListState())
     private val isRefreshing = MutableLiveData(false)
     private val animalsTabs = MutableLiveData(AnimalsTabItem.All.route)
@@ -50,38 +50,57 @@ class AnnouncementTabViewModel @Inject constructor(
     }
 
     fun initAnnouncement() {
-        getAnnouncements("")
-        getAnnouncements("dog")
-        getAnnouncements("cat")
-        getAnnouncements("other")
+        getAnnouncements()
     }
 
-    fun getAnnouncements(petType: String) {
-        getAnnouncementsUseCase(petType).onEach { result ->
+    fun getAnnouncements() {
+        getAnnouncementsUseCase("").onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    when (petType) {
-                        "dog" -> listDogs.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
-                        "cat" -> listCats.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
-                        "other" -> listOther.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
-                        else -> animalsState.postValue(AnnouncementsListState(announcements = result.data ?: emptyList()))
+                    animalsState.postValue(result.data
+                        ?.let { AnnouncementsListState(announcements = it) })
+                    listDogs.postValue(result.data?.filter { it.petType == "dog" }
+                        ?.let { AnnouncementsListState(announcements = it) })
+                    listCats.postValue(result.data?.filter { it.petType == "cat" }
+                        ?.let { AnnouncementsListState(announcements = it) })
+                    listOther.postValue(result.data?.filter { it.petType == "other" }
+                        ?.let { AnnouncementsListState(announcements = it) })
+                    detailId.value?.let { id ->
+                        _detailUiState.value =
+                            result.data?.find { it.id == id.toString() }
+                        Log.e("TAG", "getAnnouncements2: ${id} ")
+                        _snackbarState.value = id
+                        navController.navigate(AnnouncementsScreenRoute.DetailAnimalRoute.route)
+                        _detailId.value = null
                     }
                 }
                 is Resource.Loading -> {
-                    when (petType) {
-                        "dog" -> listDogs.postValue(listDogs.value?.copy(isLoading = true))
-                        "cat" -> listCats.postValue(listCats.value?.copy(isLoading = true))
-                        "other" -> listOther.postValue(listOther.value?.copy(isLoading = true))
-                        else -> animalsState.postValue(animalsState.value?.copy(isLoading = true))
-                    }
+                    listDogs.postValue(listDogs.value?.copy(isLoading = true))
+                    listCats.postValue(listCats.value?.copy(isLoading = true))
+                    listOther.postValue(listOther.value?.copy(isLoading = true))
+                    animalsState.postValue(animalsState.value?.copy(isLoading = true))
                 }
                 is Resource.Error -> {
-                    when (petType) {
-                        "dog" -> listDogs.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
-                        "cat" -> listCats.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
-                        "other" -> listOther.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
-                        else -> animalsState.postValue(AnnouncementsListState(error = result.message ?: "An unexpected error occured"))
-                    }
+                    listDogs.postValue(
+                        AnnouncementsListState(
+                            error = result.message ?: "An unexpected error occured"
+                        )
+                    )
+                    listCats.postValue(
+                        AnnouncementsListState(
+                            error = result.message ?: "An unexpected error occured"
+                        )
+                    )
+                    listOther.postValue(
+                        AnnouncementsListState(
+                            error = result.message ?: "An unexpected error occured"
+                        )
+                    )
+                    animalsState.postValue(
+                        AnnouncementsListState(
+                            error = result.message ?: "An unexpected error occured"
+                        )
+                    )
                 }
             }
         }.launchIn(viewModelScope)
@@ -95,6 +114,10 @@ class AnnouncementTabViewModel @Inject constructor(
         _detailUiState.value = announcement
     }
 
+    suspend fun snackBarOffCallback() {
+        _snackbarState.emit(null)
+    }
+
     fun popBackStack(navController: NavController) {
         navController.popBackStack()
     }
@@ -104,5 +127,15 @@ class AnnouncementTabViewModel @Inject constructor(
         announcementsScreenRoute: AnnouncementsScreenRoute
     ) {
         navController.navigate(announcementsScreenRoute.route, announcementsScreenRoute.options)
+    }
+
+    fun setNavController(navController: NavController) {
+        this.navController = navController
+    }
+
+    fun openDetail(id: Int?) {
+        id?.let {
+            _detailId.value = it
+        }
     }
 }
