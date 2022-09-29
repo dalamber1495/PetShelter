@@ -4,7 +4,8 @@ import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.
 
 const val announcementTab = "announcementTab"
 const val createAnnouncementTab = "createAnnouncementTab"
-
+const val createAnnouncementLoggedIn = "createAnnouncementLoggedIn"
+const val createAnnouncementLoggedOut = "createAnnouncementLoggedOut"
 const val profileTab = "profileGraph"
 
 sealed class MainScreenTabRoute(var name: String) {

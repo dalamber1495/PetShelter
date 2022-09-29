@@ -12,14 +12,14 @@ import com.example.petshelter.tabScreens.mainScreen.view.MainScreen
 import com.example.petshelter.tabScreens.mainScreen.viewModel.MainScreenViewModel
 
 
-@OptIn(ExperimentalFoundationApi::class)
 fun NavGraphBuilder.mainFlowGraph(navController: NavController) {
     navigation(startDestination = AppScreens.MainAppScreen.route, route = loggedUserGraph) {
         composable(route = AppScreens.MainAppScreen.route) {
             val viewModel = hiltViewModel<MainScreenViewModel>()
             MainScreen(
                 uiState = viewModel.uiState,
-                setTabRouteCallback = viewModel::setCurrentTabRoute
+                setTabRouteCallback = viewModel::setCurrentTabRoute,
+                viewModel.authState()
             )
         }
 

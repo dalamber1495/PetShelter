@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileTabViewModel @Inject constructor(
-    val appNavigation: AppNavigation,
-    val userDataRepository: UserDataRepository
+    private val appNavigation: AppNavigation,
+    private val userDataRepository: UserDataRepository
 ) : ViewModel() {
 
     private val nameAndSurname = MutableLiveData("Имя")
@@ -30,11 +30,12 @@ class ProfileTabViewModel @Inject constructor(
     fun initialInfo(){
     }
 
+    fun authState() = userDataRepository.isUserLoggedIn()
     val uiState = ProfileTabUiState(
         nameAndSurname = nameAndSurname,
         avatarUri = avatarUri,
         screenBusy = screenBusy,
-        errorMessage = errorMessage
+        errorMessage = errorMessage,
     )
 
     fun popBackStack(navController: NavController){

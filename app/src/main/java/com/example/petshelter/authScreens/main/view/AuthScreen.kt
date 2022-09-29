@@ -42,11 +42,7 @@ fun AuthScreen(
     joinCallback: () -> Unit
 ) {
 
-    val tabs = listOf(
-        AuthTabItem.SignIn,
-        AuthTabItem.Register,
-    )
-    val pagerState = rememberPagerState()
+
 
     PetShelterTheme {
         Surface(
@@ -79,8 +75,6 @@ fun AuthScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
                 AuthTabs(
-                    tabs = tabs,
-                    pagerState = pagerState,
                     uiState = uiState,
                     forgetPassCallback = navigateCallback,
                     joinEmailCallback = joinEmailCallback,

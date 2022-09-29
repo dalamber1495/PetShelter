@@ -16,3 +16,10 @@ sealed class BottomBarItem(var route: String, val iconId: Int, val disableIconId
     object CreateAnnouncementTabItem : BottomBarItem(createAnnouncementTab,R.drawable.ic_create_announce_active ,R.drawable.ic_create_announce_disable)
     object ProfileTabItem : BottomBarItem(profileTab,R.drawable.ic_profiletab_active ,R.drawable.ic_profiletab_disactive)
 }
+
+fun BottomBarItem.toTabRoute():String{
+    return if (this.route.contains(announcementTab))
+        announcementTab
+    else
+        this.route
+}

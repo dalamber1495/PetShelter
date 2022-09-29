@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
 import com.example.petshelter.navigation.routeObject.announcementTab
+import com.example.petshelter.navigation.routeObject.createAnnouncementLoggedIn
+import com.example.petshelter.navigation.routeObject.createAnnouncementLoggedOut
+import com.example.petshelter.navigation.routeObject.createAnnouncementTab
 import com.example.petshelter.ui.styles.mainTabsSelectedTextStyle
 import com.example.petshelter.ui.styles.mainTabsUnselectedTextStyle
 import com.example.petshelter.ui.theme.PetShelterTheme
@@ -31,7 +34,7 @@ fun MainPageBottomBar(
         BottomBarItem.CreateAnnouncementTabItem,
         BottomBarItem.ProfileTabItem
     )
-
+    Log.e("TAG", "MainPageBottomBar: $currentRoute", )
     BottomAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +47,7 @@ fun MainPageBottomBar(
                 modifier = Modifier
                     .then(Modifier.weight(if (item == BottomBarItem.CreateAnnouncementTabItem) 1.25f else 1f)),
                 icon = {
-                    when ((currentRoute == item.route)||(currentRoute.contains(announcementTab)&&item.route.contains(announcementTab))) {
+                    when ((currentRoute.toTabRoute() == item.toTabRoute())) {
                         true -> Icon(
                             painterResource(id = item.iconId),
                             contentDescription = item.route
@@ -55,7 +58,7 @@ fun MainPageBottomBar(
                         )
                     }
                 },
-                selected = (currentRoute == item.route)||(currentRoute.contains(announcementTab)&&item.route.contains(announcementTab)),
+                selected = (currentRoute.toTabRoute() == item.toTabRoute()),
                 alwaysShowLabel = true,
                 label = {
                     Text(
@@ -71,7 +74,7 @@ fun MainPageBottomBar(
                                 stringResource(R.string.profile_tab_label)
                             }
                         },
-                        style = if (currentRoute == item.route||(currentRoute.contains(announcementTab)&&item.route.contains(announcementTab))) {
+                        style = if (currentRoute.toTabRoute() == item.toTabRoute()||(currentRoute.contains(announcementTab)&&item.route.contains(announcementTab))) {
                             mainTabsSelectedTextStyle
                         } else {
                             mainTabsUnselectedTextStyle
@@ -95,4 +98,13 @@ fun BottomBarPreview() {
     PetShelterTheme {
         MainPageBottomBar(currentRoute = BottomBarItem.AnnouncementTabItem.route, {})
     }
+}
+
+private fun String.toTabRoute():String{
+    return if(this== createAnnouncementLoggedIn||this== createAnnouncementLoggedOut)
+        createAnnouncementTab
+    else if(this.contains(announcementTab))
+        announcementTab
+    else
+        this
 }

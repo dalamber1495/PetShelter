@@ -21,26 +21,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.eql.consts.ui.colors.petShelterBlack
 import com.eql.consts.ui.colors.petShelterBlue
-import com.eql.consts.ui.colors.petShelterWhite
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.common.AuthTabItem
 import com.example.petshelter.authScreens.main.consts.joinTextStyle
 import com.example.petshelter.authScreens.main.consts.tabTextStyle
 import com.example.petshelter.authScreens.main.model.AuthUiState
 import com.example.petshelter.navigation.routeObject.AppScreens
-import com.example.petshelter.ui.theme.Shapes
 import com.example.petshelter.utils.UiText
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AuthTabs(
-    tabs: List<AuthTabItem>,
-    pagerState: PagerState,
     uiState: AuthUiState,
     forgetPassCallback: (AppScreens) -> Unit,
     joinEmailCallback: (String) -> Unit,
@@ -52,6 +45,11 @@ fun AuthTabs(
     registerCallback: () -> Unit,
     joinCallback: () -> Unit
 ) {
+    val tabs = listOf(
+        AuthTabItem.SignIn,
+        AuthTabItem.Register,
+    )
+    val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     TabRow(
         modifier = Modifier

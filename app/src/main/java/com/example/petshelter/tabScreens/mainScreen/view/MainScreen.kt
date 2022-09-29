@@ -23,7 +23,8 @@ import com.example.petshelter.tabScreens.mainScreen.navigation.TabsNavigation
 @Composable
 fun MainScreen(
     uiState: MainScreenUIState,
-    setTabRouteCallback: (String) -> Unit
+    setTabRouteCallback: (String) -> Unit,
+    authState:Boolean
 ) {
     val currentTab = uiState.currentTabRoute.observeAsState()
     val tabsNavigator = rememberNavController()
@@ -65,7 +66,7 @@ fun MainScreen(
                 PaddingValues(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
             )
         ) {
-            TabsNavigation(navController = tabsNavigator, openDetailTab)
+            TabsNavigation(navController = tabsNavigator, openDetailTab,authState)
         }
     }
 
