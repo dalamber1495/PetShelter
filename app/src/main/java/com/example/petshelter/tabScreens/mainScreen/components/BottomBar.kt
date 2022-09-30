@@ -86,7 +86,10 @@ fun MainPageBottomBar(
                     )
                 },
                 selectedContentColor = Color.White,
-                onClick = { onItemClick?.invoke(item.route) }
+                onClick = {
+                    if (currentRoute.toTabRoute() != item.toTabRoute())
+                    onItemClick?.invoke(item.route)
+                }
             )
         }
     }

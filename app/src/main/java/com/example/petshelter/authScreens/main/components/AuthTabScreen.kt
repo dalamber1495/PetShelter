@@ -47,7 +47,7 @@ fun AuthTabScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         AuthTabs(
             uiState = uiState,
             forgetPassCallback = forgetPassCallback,

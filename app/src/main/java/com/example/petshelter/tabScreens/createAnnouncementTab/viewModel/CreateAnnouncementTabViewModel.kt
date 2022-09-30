@@ -113,7 +113,6 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     }
 
     fun markerPositionMove(myPosition: Boolean, move: (SecondStepLocateData) -> Unit) {
-        Log.e("TAG", "markerPositionMove: $myPosition")
         viewModelScope.launch {
             val locateData = locationLiveData.getCurrentPosition()
             if (!myPosition) {
@@ -149,18 +148,15 @@ class CreateAnnouncementTabViewModel @Inject constructor(
             when(result){
                 is Resource.Success ->{
                     screenBusy.postValue(false)
-                    result.data?.id?.let { openDetailTab.invoke(it) }
                     userDataRepository.saveFirstScreenPhotoUri(null)
                     userDataRepository.saveSecondScreenLocate(null)
-                    Log.e("TAG", "postAnnouncementBtn: ${result.data}" )
+                    result.data?.id?.let { openDetailTab.invoke(it) }
                 }
                 is Resource.Loading ->{
                     screenBusy.postValue(true)
-                    Log.e("TAG", "postAnnouncementBtn: LOADING" )
                 }
                 is Resource.Error ->{
                     screenBusy.postValue(false)
-                    Log.e("TAG", "postAnnouncementBtn: ${result.message}" )
                 }
             }
 

@@ -66,10 +66,9 @@ fun SecondStepCreateAnnouncementForm(
     val permissionDialog = remember {
         mutableStateOf(false)
     }
-
     DisposableEffect(key1 = lifecycleOwner, effect = {
         val eventObserver = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
+            if (event == Lifecycle.Event.ON_RESUME) {
                 permissionStates.permissions.forEach {
                     when (it.permission) {
                         Manifest.permission.ACCESS_FINE_LOCATION -> {
