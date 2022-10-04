@@ -22,18 +22,14 @@ fun AnnouncementsAnimalNavigation(id:String?){
     NavHost(navController = navController, startDestination = AnnouncementsScreenRoute.AnnouncementsRoute.route){
 
         composable(AnnouncementsScreenRoute.AnnouncementsRoute.route){
-            Log.e("TAG", "AnnouncementsAnimalNavigation: ", )
-            viewModel.setNavController(navController)
-            id?.let {
-                viewModel.openDetail(it.toInt())
-                MainScreenTabRoute.AnnouncementTab.createRoute(animalIdParam)
-            }
             AnnouncementTabScreen(
                 viewModel.uiState,
                 navController,
                 viewModel::navigateTo,
                 viewModel::selectAnnouncementCallback,
-                viewModel::getAnnouncements
+                viewModel::getAnnouncements,
+                id,
+                viewModel::openDetail
             )
         }
 

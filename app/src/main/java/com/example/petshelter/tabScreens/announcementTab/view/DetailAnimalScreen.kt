@@ -28,6 +28,7 @@ import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.authScreens.main.consts.btnTextStyle
 import com.example.petshelter.data.remote.dto.GeoPosition
+import com.example.petshelter.domain.model.AnnouncementsListState
 import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.announcementTab.model.LocateData
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
@@ -42,12 +43,12 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun DetailAnimalScreen(
-    selectedAnnouncementState: State<AnnouncementState?>,
+    selectedAnnouncementState: State<AnnouncementsListState>,
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
     popBackStack: (NavController) -> Unit,
     snackbarState: StateFlow<Int?>,
-    snackBarOffCallback: suspend ()->Unit
+    snackBarOffCallback: suspend () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -59,105 +60,120 @@ fun DetailAnimalScreen(
                     message = "Объявление опубликовано",
                     duration = SnackbarDuration.Short
                 )
-                when(result){
-                    SnackbarResult.ActionPerformed ->{snackBarOffCallback.invoke()}
-                    SnackbarResult.Dismissed -> {snackBarOffCallback.invoke()}
+                when (result) {
+                    SnackbarResult.ActionPerformed -> {
+                        snackBarOffCallback.invoke()
+                    }
+                    SnackbarResult.Dismissed -> {
+                        snackBarOffCallback.invoke()
+                    }
                 }
             }
         }.collect()
     }
     Box {
-        Scaffold(
-            topBar = {
-                TopBarCreateAnnouncement(
-                    backArrowShow = true,
-                    textTopBar = selectedAnnouncementState.value?.title,
-                    backArrowCallback = { popBackStack.invoke(navController) }
-                )
-            },
-        ) {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(
-                        state = scrollState,
+        if (!selectedAnnouncementState.value.isLoading) {
+            Scaffold(
+                topBar = {
+                    TopBarCreateAnnouncement(
+                        backArrowShow = true,
+                        textTopBar = selectedAnnouncementState.value.announcements.first().title,
+                        backArrowCallback = { popBackStack.invoke(navController) }
                     )
-                    .padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                },
             ) {
-                AnimalPhoto(
-                    isPhotoBusy = false,
-                    photoUri = selectedAnnouncementState.value?.imageUrl
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_pet_marker),
-                        contentDescription = "pet marker"
-                    )
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth(0.4f)
-                            .padding(horizontal = 2.dp),
-                        maxLines = 2,
-                        text = selectedAnnouncementState.value?.address?: "${selectedAnnouncementState.value?.geoPosition?.lat.toString()} ${selectedAnnouncementState.value?.geoPosition?.lng.toString()}"
-                    )
-                    PetShelterBtn(
-                        modifier = Modifier
-                            .width(136.dp)
-                            .height(48.dp),
-                        text = "На карте",
-                        clickCallback = {
-                            navigateCallback.invoke(
-                                navController,
-                                AnnouncementsScreenRoute.MapLocateRoute
-                            )
-                        }
-                    )
-                }
-                Spacer(modifier = Modifier.height(24.dp))
                 Column(
-                    Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .verticalScroll(
+                            state = scrollState,
+                        )
+                        .padding(it),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                )
-                {
-                    Text(
-                        text = selectedAnnouncementState.value?.description ?: "",
-                        style = dialogTextStyle
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    AnimalPhoto(
+                        isPhotoBusy = false,
+                        photoUri = selectedAnnouncementState.value.announcements.first().imageUrl
                     )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_pet_marker),
+                            contentDescription = "pet marker"
+                        )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(0.4f)
+                                .padding(horizontal = 2.dp),
+                            maxLines = 2,
+                            text = selectedAnnouncementState.value.announcements.first().address
+                                ?: "${selectedAnnouncementState.value.announcements.first().geoPosition.lat.toString()} ${selectedAnnouncementState.value.announcements.first().geoPosition.lng.toString()}"
+                        )
+                        PetShelterBtn(
+                            modifier = Modifier
+                                .width(136.dp)
+                                .height(48.dp),
+                            text = "На карте",
+                            clickCallback = {
+                                navigateCallback.invoke(
+                                    navController,
+                                    AnnouncementsScreenRoute.MapLocateRoute
+                                )
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Column(
+                        Modifier.padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    )
+                    {
+                        Text(
+                            text = selectedAnnouncementState.value.announcements.first().description,
+                            style = dialogTextStyle
+                        )
+                    }
                 }
             }
-        }
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier
-                    .fillMaxHeight(0.09f)
-                    .padding(top = 8.dp, start = 10.dp, end = 10.dp)
-            ) { data ->
-                Snackbar(
-                    backgroundColor = petShelterOrange,
-                    contentColor = petShelterWhite,
-                    action = {
-                        IconButton(onClick = { data.performAction() }) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null,
-                                tint = petShelterWhite
-                            )
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier
+                        .fillMaxHeight(0.09f)
+                        .padding(top = 8.dp, start = 10.dp, end = 10.dp)
+                ) { data ->
+                    Snackbar(
+                        backgroundColor = petShelterOrange,
+                        contentColor = petShelterWhite,
+                        action = {
+                            IconButton(onClick = { data.performAction() }) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null,
+                                    tint = petShelterWhite
+                                )
+                            }
                         }
+                    ) {
+                        Text(text = data.message, style = btnTextStyle)
                     }
-                ) {
-                    Text(text = data.message, style = btnTextStyle)
                 }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(color = petShelterBlue)
             }
         }
     }
@@ -254,15 +270,20 @@ fun DetailAnimalScreenPreview() {
 
     val uiState = remember {
         mutableStateOf(
-            AnnouncementState(
-                "описание потеряшки описаниеописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшки потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшки",
-                GeoPosition(LocateData().latPhoto!!, LocateData().lngPhoto!!),
-                "Ulitsa 2 Mikrorayon, 1/20, Sharypovo, Krasnoyarskiy kray, Russia, 662314",
-                "2",
-                null,
-                "dog",
-                "Заголовок животного"
+            AnnouncementsListState(
+                announcements = listOf(
+                    AnnouncementState(
+                        "описание потеряшки описаниеописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшки потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшки",
+                        GeoPosition(LocateData().latPhoto!!, LocateData().lngPhoto!!),
+                        "Ulitsa 2 Mikrorayon, 1/20, Sharypovo, Krasnoyarskiy kray, Russia, 662314",
+                        "2",
+                        null,
+                        "dog",
+                        "Заголовок животного"
+                    )
+                )
             )
+
         )
     }
     PetShelterTheme {

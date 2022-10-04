@@ -12,20 +12,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.petshelter.common.composables.GoogleMapView
-import com.example.petshelter.domain.model.Announcement
-import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
+import com.example.petshelter.domain.model.AnnouncementsListState
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.TopBarCreateAnnouncement
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 
 @Composable
 fun MapLocationScreen(
-    selectedAnnouncementState: State<AnnouncementState?>,
+    selectedAnnouncementState: State<AnnouncementsListState?>,
     navController: NavController,
     popBackStack: (NavController) -> Unit
 ){
 
-    val coordinate = LatLng(selectedAnnouncementState.value?.geoPosition?.lat!!, selectedAnnouncementState.value?.geoPosition?.lng!!)
+    val coordinate = LatLng(selectedAnnouncementState.value?.announcements?.first()?.geoPosition?.lat!!, selectedAnnouncementState.value?.announcements?.first()?.geoPosition?.lng!!)
     val defaultCameraPosition = CameraPosition.fromLatLngZoom(coordinate, 18f)
     var isMapLoaded by remember { mutableStateOf(false) }
     val cameraPositionState = rememberCameraPositionState {
@@ -36,7 +35,7 @@ fun MapLocationScreen(
         topBar = {
             TopBarCreateAnnouncement(
                 backArrowShow = true,
-                textTopBar = selectedAnnouncementState.value?.title,
+                textTopBar = selectedAnnouncementState.value?.announcements?.first()?.title,
                 backArrowCallback = { popBackStack.invoke(navController) }
             )
         }

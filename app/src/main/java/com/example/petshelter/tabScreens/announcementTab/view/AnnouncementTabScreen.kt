@@ -3,7 +3,6 @@ package com.example.petshelter.tabScreens.announcementTab.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -44,7 +43,6 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.api.FieldBehavior
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -54,7 +52,10 @@ fun AnnouncementTabScreen(
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
     selectAnnouncementCallback: (AnnouncementState) -> Unit,
-    initAnnouncement: () -> Unit
+    initAnnouncement: () -> Unit,
+    id:String?,
+    openDetail:(Int,NavController)->Unit
+
 ) {
 
     val announcements = uiState.animalsState.observeAsState(AnnouncementsListState())
@@ -63,11 +64,10 @@ fun AnnouncementTabScreen(
     val listOther = uiState.listOther.observeAsState(AnnouncementsListState())
     val isRefreshing = uiState.isRefreshing.observeAsState(false)
 
-    LaunchedEffect("getAnnouncements") {
-//        getAnnouncementsCallback.invoke("")
-//        getAnnouncementsCallback.invoke("dog")
-//        getAnnouncementsCallback.invoke("cat")
-//        getAnnouncementsCallback.invoke("other")
+    LaunchedEffect(key1 = id){
+        id?.let {
+            openDetail.invoke(it.toInt(),navController)
+        }
     }
 
     val tabs = listOf(
@@ -192,7 +192,8 @@ fun ListAnnouncements(
                                         .background(backgroundPhotoColor)
                                 ) {
                                     Image(
-                                        modifier = Modifier.height(maxWidth)
+                                        modifier = Modifier
+                                            .height(maxWidth)
                                             .width(maxWidth),
                                         painter = rememberAsyncImagePainter(
                                             model = announcements.announcements[it].imageUrl
@@ -328,7 +329,7 @@ fun AnnouncementTabScreenPreview() {
             ),
             navController = rememberNavController(),
             { w, t -> },
-            {}, {}
+            {}, {},"",{e,r->}
 
         )
     }
