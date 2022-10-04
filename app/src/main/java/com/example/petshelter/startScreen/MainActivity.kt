@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val startingDestination = AppScreens.MainAppScreen.route
 
-
         val startingGraph =
             if (userDataRepository.isUserLoggedIn()) loggedUserGraph else notLoggedUserGraph
 

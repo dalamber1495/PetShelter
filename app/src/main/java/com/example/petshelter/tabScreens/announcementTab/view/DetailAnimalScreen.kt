@@ -28,14 +28,13 @@ import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.authScreens.main.consts.btnTextStyle
 import com.example.petshelter.data.remote.dto.GeoPosition
-import com.example.petshelter.domain.model.Announcement
+import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.announcementTab.model.LocateData
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.TopBarCreateAnnouncement
 import com.example.petshelter.tabScreens.mainScreen.consts.ultraLightGray
 import com.example.petshelter.ui.styles.dialogTextStyle
 import com.example.petshelter.ui.theme.PetShelterTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -43,7 +42,7 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun DetailAnimalScreen(
-    selectedAnnouncementState: State<Announcement?>,
+    selectedAnnouncementState: State<AnnouncementState?>,
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
     popBackStack: (NavController) -> Unit,
@@ -105,7 +104,7 @@ fun DetailAnimalScreen(
                             .fillMaxWidth(0.4f)
                             .padding(horizontal = 2.dp),
                         maxLines = 2,
-                        text = selectedAnnouncementState.value?.geoPosition?.lat.toString() + " " + selectedAnnouncementState.value?.geoPosition?.lng.toString()
+                        text = selectedAnnouncementState.value?.address?: "${selectedAnnouncementState.value?.geoPosition?.lat.toString()} ${selectedAnnouncementState.value?.geoPosition?.lng.toString()}"
                     )
                     PetShelterBtn(
                         modifier = Modifier
@@ -255,9 +254,10 @@ fun DetailAnimalScreenPreview() {
 
     val uiState = remember {
         mutableStateOf(
-            Announcement(
+            AnnouncementState(
                 "описание потеряшки описаниеописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшки потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшкиописание потеряшки",
                 GeoPosition(LocateData().latPhoto!!, LocateData().lngPhoto!!),
+                "Ulitsa 2 Mikrorayon, 1/20, Sharypovo, Krasnoyarskiy kray, Russia, 662314",
                 "2",
                 null,
                 "dog",

@@ -1,16 +1,17 @@
 package com.example.petshelter.di
 
 import android.content.Context
+import android.location.Geocoder
 import com.eql.repositories.backendUserData.authenticator.RemoteServerBackendAuthenticator
+import com.example.petshelter.BuildConfig
 import com.example.petshelter.common.Constants.BASE_URL
 import com.example.petshelter.data.remote.repository.authenticator.AuthApiService
 import com.example.petshelter.data.remote.repository.backendAnimals.PetShelterApi
-import com.example.petshelter.data.remote.repository.backendAnimals.AnnouncementRepositoryImpl
-import com.example.petshelter.domain.repository.backendAnimals.AnnouncementsRepository
-import com.example.petshelter.data.remote.repository.firebase.FirebaseBackend
 import com.example.petshelter.data.remote.useCases.SetAuthorizationHeaderUseCase
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.geo.LocationLiveData
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -21,6 +22,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -97,5 +99,11 @@ object AppModule {
     fun provideLocationLiveData(@ApplicationContext context: Context) =
         LocationLiveData(context)
 
+
+    @Provides
+    @Singleton
+    fun provideGeocoding(@ApplicationContext context: Context):Geocoder{
+        return Geocoder(context, Locale.getDefault())
+    }
 
 }

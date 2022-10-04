@@ -14,6 +14,11 @@ class AnnouncementRepositoryImpl @Inject constructor(
         api.registerUser(registerData)
     override suspend fun getAnnouncements(petType:String): List<AnnouncementDto> =
         api.getAnnouncements(petType)
+
+    override suspend fun getAnnouncement(id: String): AnnouncementDto =
+        api.getAnnouncement(id)
+
+
     override suspend fun postAnnouncement(
         announcementDto: AnnouncementDtoPost,
         auth: String

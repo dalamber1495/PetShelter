@@ -13,13 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.petshelter.common.composables.GoogleMapView
 import com.example.petshelter.domain.model.Announcement
+import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.createAnnouncementTab.view.components.TopBarCreateAnnouncement
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 
 @Composable
 fun MapLocationScreen(
-    selectedAnnouncementState: State<Announcement?>,
+    selectedAnnouncementState: State<AnnouncementState?>,
     navController: NavController,
     popBackStack: (NavController) -> Unit
 ){
@@ -40,7 +41,7 @@ fun MapLocationScreen(
             )
         }
     ){
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().padding(it)) {
             GoogleMapView(
                 modifier = Modifier.matchParentSize(),
                 coordinateMarker = listOf(coordinate),

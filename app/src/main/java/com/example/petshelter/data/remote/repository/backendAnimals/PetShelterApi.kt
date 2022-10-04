@@ -21,6 +21,11 @@ interface PetShelterApi {
         @Query("petType") pet: String = ""
     ): List<AnnouncementDto>
 
+    @GET("/api/1.0.0/announcements/{id}")
+    suspend fun getAnnouncement(
+        @Path("id") id: String
+    ): AnnouncementDto
+
     @POST("/api/1.0.0/announcements")
     suspend fun postAnnouncements(
         @Header("Authorization") auth: String,

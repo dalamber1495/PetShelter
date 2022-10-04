@@ -1,5 +1,6 @@
 package com.example.petshelter.tabScreens.createAnnouncementTab.viewModel
 
+import android.location.Geocoder
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -16,6 +17,7 @@ import com.example.petshelter.navigation.AppNavigation
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.AnimalCardState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.FillAnimalInfoUiState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
+import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -27,7 +29,7 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     val appNavigation: AppNavigation,
     val locationLiveData: LocationLiveData,
     val postAnnouncementUseCase: PostAnnouncementUseCase,
-    val userDataRepository: UserDataRepository
+    val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 
     private val screenBusy = MutableLiveData(false)

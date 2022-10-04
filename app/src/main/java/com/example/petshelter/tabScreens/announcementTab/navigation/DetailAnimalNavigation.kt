@@ -33,7 +33,7 @@ fun AnnouncementsAnimalNavigation(id:String?){
                 navController,
                 viewModel::navigateTo,
                 viewModel::selectAnnouncementCallback,
-                viewModel::initAnnouncement
+                viewModel::getAnnouncements
             )
         }
 

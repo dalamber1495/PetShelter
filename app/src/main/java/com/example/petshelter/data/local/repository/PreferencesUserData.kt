@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import com.example.petshelter.data.remote.dto.RefreshTokenData
 import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
+import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -28,11 +29,11 @@ class PreferencesUserData @Inject constructor(
             "file:///data/user/0/com.petshelter/files/images/avatar.png"
     }
 
-    private val listAnnouncements = object : TypeToken<List<Announcement>>() {}.type
+    private val listAnnouncements = object : TypeToken<List<AnnouncementState>>() {}.type
     private val gson = Gson()
 
 
-    override fun getAnnouncements(): List<Announcement> {
+    override fun getAnnouncements(): List<AnnouncementState> {
         val dataJson = sharedPreferences.getString(animalFieldName, null)
         return when (dataJson == null) {
             true -> emptyList()
@@ -40,7 +41,7 @@ class PreferencesUserData @Inject constructor(
         }
     }
 
-    override fun saveAnnouncements(data: List<Announcement>) {
+    override fun saveAnnouncements(data: List<AnnouncementState>) {
         val userJson = gson.toJson(data, listAnnouncements)
         sharedPreferences.edit()
             .putString(animalFieldName, userJson)

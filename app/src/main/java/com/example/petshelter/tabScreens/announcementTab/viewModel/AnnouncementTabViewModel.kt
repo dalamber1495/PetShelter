@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.petshelter.common.Resource
-import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.model.AnnouncementsListState
 import com.example.petshelter.domain.useCases.GetAnnouncementsUseCase
 import com.example.petshelter.tabScreens.announcementTab.common.AnimalsTabItem
+import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementTabUiState
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,8 +34,8 @@ class AnnouncementTabViewModel @Inject constructor(
     private val listOther = MutableLiveData(AnnouncementsListState())
     private val isRefreshing = MutableLiveData(false)
     private val animalsTabs = MutableLiveData(AnimalsTabItem.All.route)
-    private val _detailUiState = mutableStateOf<Announcement?>(null)
-    val detailUiState: State<Announcement?> = _detailUiState
+    private val _detailUiState = mutableStateOf<AnnouncementState?>(null)
+    val detailUiState: State<AnnouncementState?> = _detailUiState
     val uiState = AnnouncementTabUiState(
         animalsTabs = animalsTabs,
         animalsState = animalsState,
@@ -46,12 +46,9 @@ class AnnouncementTabViewModel @Inject constructor(
     )
 
     init {
-        initAnnouncement()
-    }
-
-    fun initAnnouncement() {
         getAnnouncements()
     }
+
 
     fun getAnnouncements() {
         getAnnouncementsUseCase("").onEach { result ->
@@ -110,7 +107,7 @@ class AnnouncementTabViewModel @Inject constructor(
         animalsTabs.postValue(tab.route)
     }
 
-    fun selectAnnouncementCallback(announcement: Announcement) {
+    fun selectAnnouncementCallback(announcement: AnnouncementState) {
         _detailUiState.value = announcement
     }
 

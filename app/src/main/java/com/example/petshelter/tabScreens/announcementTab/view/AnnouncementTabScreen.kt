@@ -30,9 +30,9 @@ import com.eql.consts.ui.colors.petShelterBlue
 import com.eql.consts.ui.colors.placeHolderColor
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.consts.mainTabTextStyle
-import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.model.AnnouncementsListState
 import com.example.petshelter.tabScreens.announcementTab.common.*
+import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementTabUiState
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
 import com.example.petshelter.ui.styles.descriptionAnnounceTextStyle
@@ -53,7 +53,7 @@ fun AnnouncementTabScreen(
     uiState: AnnouncementTabUiState,
     navController: NavController,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback: (Announcement) -> Unit,
+    selectAnnouncementCallback: (AnnouncementState) -> Unit,
     initAnnouncement: () -> Unit
 ) {
 
@@ -148,7 +148,7 @@ fun AnnouncementTabScreen(
 fun ListAnnouncements(
     announcements: AnnouncementsListState,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback: (Announcement) -> Unit,
+    selectAnnouncementCallback: (AnnouncementState) -> Unit,
     isRefreshing: Boolean,
     refreshCallback: () -> Unit,
     navController: NavController
@@ -223,7 +223,7 @@ fun ListAnnouncements(
                                             contentDescription = null
                                         )
                                         Text(
-                                            text = "${announcements.announcements[it].geoPosition.lat} ${announcements.announcements[it].geoPosition.lng}",
+                                            text = announcements.announcements[it].address?:"${announcements.announcements[it].geoPosition.lat} ${announcements.announcements[it].geoPosition.lng}",
                                             style = descriptionAnnounceTextStyle,
                                             color = placeHolderColor,
                                             maxLines = 2
@@ -255,7 +255,7 @@ fun AuthTabsContent(
     listCats: AnnouncementsListState,
     listOther: AnnouncementsListState,
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
-    selectAnnouncementCallback: (Announcement) -> Unit,
+    selectAnnouncementCallback: (AnnouncementState) -> Unit,
     refreshCallback: () -> Unit,
     isRefreshing: Boolean,
     navController: NavController
