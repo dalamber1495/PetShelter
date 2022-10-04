@@ -42,7 +42,6 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     private val secondStepLocateData = MutableLiveData(SecondStepLocateData())
     private val avatarUri = MutableLiveData<Uri?>()
     private val errorMessage = MutableLiveData("")
-    private lateinit var tabNavController:NavController
     private lateinit var openDetailTab: (String)->Unit
 
     val uiState = FillAnimalInfoUiState(
@@ -58,8 +57,7 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         errorMessage = errorMessage
     )
 
-    fun setTabNavController(navController: NavController,openDetailTab: (String)->Unit){
-        tabNavController = navController
+    fun setTabNavController(openDetailTab: (String)->Unit){
         this.openDetailTab = openDetailTab
     }
     fun defaultValuesSelect(
