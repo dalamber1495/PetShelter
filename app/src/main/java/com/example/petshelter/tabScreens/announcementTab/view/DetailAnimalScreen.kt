@@ -1,8 +1,8 @@
 package com.example.petshelter.tabScreens.announcementTab.view
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +49,7 @@ fun DetailAnimalScreen(
     navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
     popBackStack: (NavController) -> Unit,
     snackbarState: StateFlow<Int?>,
-    snackBarOffCallback: suspend () -> Unit
+    snackBarOffCallback: suspend () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -93,7 +94,9 @@ fun DetailAnimalScreen(
                 ) {
                     AnimalPhoto(
                         isPhotoBusy = false,
-                        photoUri = selectedAnnouncementState.value.announcements.first().imageUrl
+                        photoUri = selectedAnnouncementState.value.announcements.first().imageUrl,
+                        navigateCallback = navigateCallback,
+                        navController = navController
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Row(
@@ -183,15 +186,27 @@ fun DetailAnimalScreen(
 @Composable
 fun AnimalPhoto(
     isPhotoBusy: Boolean,
-    photoUri: Uri?
+    photoUri: Uri?,
+    navigateCallback: (NavController, AnnouncementsScreenRoute) -> Unit,
+    navController: NavController
 ) {
 
     val photoBusy = remember {
         mutableStateOf(false)
     }
+    val clickAvailable = remember {
+        mutableStateOf(false)
+    }
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                if (clickAvailable.value)
+                    navigateCallback.invoke(
+                        navController,
+                        AnnouncementsScreenRoute.DetailPhotoRoute
+                    )
+            }
     ) {
         Card(
             modifier = Modifier
@@ -204,11 +219,16 @@ fun AnimalPhoto(
                 model = photoUri,
                 contentDescription = "profile_photo",
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
             ) {
                 when (painter.state) {
-                    is AsyncImagePainter.State.Loading -> photoBusy.value = true
+                    is AsyncImagePainter.State.Loading -> {
+                        clickAvailable.value = false
+                        photoBusy.value = true
+                    }
                     is AsyncImagePainter.State.Error -> {
+                        clickAvailable.value = false
                         when (isPhotoBusy) {
                             true -> photoBusy.value = true
                             else -> {
@@ -220,10 +240,12 @@ fun AnimalPhoto(
                     else -> {
                         when (isPhotoBusy) {
                             true -> {
+                                clickAvailable.value = false
                                 SubcomposeAsyncImageContent()
                                 photoBusy.value = true
                             }
                             else -> {
+                                clickAvailable.value = true
                                 photoBusy.value = false
                                 SubcomposeAsyncImageContent()
                             }

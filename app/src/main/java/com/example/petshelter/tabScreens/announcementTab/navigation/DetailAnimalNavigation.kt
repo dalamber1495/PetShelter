@@ -1,16 +1,14 @@
 package com.example.petshelter.tabScreens.announcementTab.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.petshelter.navigation.routeObject.MainScreenTabRoute
 import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.AnnouncementsScreenRoute
-import com.example.petshelter.tabScreens.announcementTab.navigation.routeObject.animalIdParam
 import com.example.petshelter.tabScreens.announcementTab.view.AnnouncementTabScreen
 import com.example.petshelter.tabScreens.announcementTab.view.DetailAnimalScreen
+import com.example.petshelter.tabScreens.announcementTab.view.DetailPhotoScreen
 import com.example.petshelter.tabScreens.announcementTab.view.MapLocationScreen
 import com.example.petshelter.tabScreens.announcementTab.viewModel.AnnouncementTabViewModel
 
@@ -41,7 +39,7 @@ fun AnnouncementsAnimalNavigation(id:String?){
                 navigateCallback = viewModel::navigateTo,
                 popBackStack = viewModel::popBackStack,
                 snackbarState = viewModel.snackbarState,
-                snackBarOffCallback = viewModel::snackBarOffCallback
+                snackBarOffCallback = viewModel::snackBarOffCallback,
             )
         }
         composable(route = AnnouncementsScreenRoute.MapLocateRoute.route) {
@@ -49,6 +47,13 @@ fun AnnouncementsAnimalNavigation(id:String?){
                 selectedAnnouncementState = viewModel.detailUiState,
                 navController = navController,
                 popBackStack = viewModel::popBackStack
+            )
+        }
+        composable(route = AnnouncementsScreenRoute.DetailPhotoRoute.route){
+            DetailPhotoScreen(
+                popBackStack = viewModel::popBackStack,
+                navController = navController,
+                selectedAnnouncementState = viewModel.detailUiState
             )
         }
     }

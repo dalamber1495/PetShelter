@@ -6,6 +6,7 @@ const val detailAnimalRoute = "detailAnimalRoute"
 const val animalIdParam = "animalId"
 const val announcementsRoute = "announcementsRoute"
 const val mapLocateRoute = "mapLocateRoute"
+const val detailPhotoRoute = "detailPhotoRoute"
 
 sealed class AnnouncementsScreenRoute(
     var route: String,
@@ -23,4 +24,5 @@ sealed class AnnouncementsScreenRoute(
 
     object DetailAnimalRoute : AnnouncementsScreenRoute(detailAnimalRoute)
     object MapLocateRoute : AnnouncementsScreenRoute(mapLocateRoute)
+    object DetailPhotoRoute:AnnouncementsScreenRoute(detailPhotoRoute)
 }

@@ -12,12 +12,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.common.composables.GoogleMapView
@@ -27,11 +27,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
-import kotlin.reflect.KFunction2
 
 
 const val TAG = "Second Step Form"
@@ -143,7 +141,7 @@ fun SecondStepCreateAnnouncementForm(
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .background(MaterialTheme.colors.background)
+                            .background(petShelterBlue)
                             .wrapContentSize()
                     )
                 }

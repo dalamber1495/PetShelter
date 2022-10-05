@@ -3,15 +3,12 @@ package com.example.petshelter.di
 import android.content.Context
 import android.location.Geocoder
 import com.eql.repositories.backendUserData.authenticator.RemoteServerBackendAuthenticator
-import com.example.petshelter.BuildConfig
 import com.example.petshelter.common.Constants.BASE_URL
 import com.example.petshelter.data.remote.repository.authenticator.AuthApiService
 import com.example.petshelter.data.remote.repository.backendAnimals.PetShelterApi
 import com.example.petshelter.data.remote.useCases.SetAuthorizationHeaderUseCase
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.geo.LocationLiveData
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
