@@ -59,7 +59,7 @@ fun TabsNavigation(
                     viewModel::defaultValuesSelect,
                     viewModel::setTitleText,
                     viewModel::setDescriptionText,
-                    viewModel::postAnnouncementBtn
+                    viewModel::postAnnouncementBtn,
                 )
             }
             composable(route = createAnnouncementLoggedOut) {

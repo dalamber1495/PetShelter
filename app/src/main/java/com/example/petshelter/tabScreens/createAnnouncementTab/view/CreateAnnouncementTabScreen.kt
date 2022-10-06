@@ -34,7 +34,7 @@ fun CreateAnnouncementTabScreen(
     defaultValues: () -> Unit,
     setTitleCallback:(String)->Unit,
     setDescriptionCallback:(String)->Unit,
-    postAnnouncementCallback:()->Unit
+    postAnnouncementCallback:()->Unit,
 ) {
     val firstStep = uiState.firstStep.observeAsState(initial = false)
     val secondStep = uiState.secondStep.observeAsState(initial = false)
@@ -58,7 +58,7 @@ fun CreateAnnouncementTabScreen(
                     screenIsBusy = screenIsBusy.value,
                     avatarUri = avatarUri.value,
                     firstStepReadyCallback = firstStepReadyCallback,
-                    addPhotoCallback = addPhotoCallback
+                    addPhotoCallback = addPhotoCallback,
                 )
             }
             firstStep.value && !secondStep.value && !thirdStep.value -> {
@@ -120,7 +120,7 @@ fun CreateAnnouncementTabScreenPreview() {
             {},
             {},
             {},
-            {}
+            {},
         )
     }
 }

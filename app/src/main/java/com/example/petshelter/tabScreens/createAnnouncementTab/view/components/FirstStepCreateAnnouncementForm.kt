@@ -2,47 +2,33 @@ package com.example.petshelter.tabScreens.createAnnouncementTab.view.components
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.traceEventStart
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityOptionsCompat
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import com.canhub.cropper.CropImageContract
-import com.canhub.cropper.CropImageContractOptions
-import com.canhub.cropper.CropImageView
-import com.canhub.cropper.options
 import com.eql.consts.ui.colors.petShelterBlue
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
-import com.example.petshelter.tabScreens.createAnnouncementTab.model.FirstStepAddPhotoData
 import com.example.petshelter.ui.theme.PetShelterTheme
-import com.example.petshelter.ui.theme.Shapes
+import com.example.petshelter.utils.ComposeFileProvider
 import java.io.File
 import java.util.*
 
@@ -51,24 +37,39 @@ fun FirstStepCreateAnnouncementForm(
     screenIsBusy: Boolean,
     avatarUri: Uri?,
     addPhotoCallback: (Uri?) -> Unit,
-    firstStepReadyCallback: () -> Unit
+    firstStepReadyCallback: () -> Unit,
 ) {
 
     val context = LocalContext.current
-    val cropImage = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
-        when (result.isSuccessful) {
-            true -> {
-                val uriContent = result.uriContent
-                if (uriContent != null) addPhotoCallback.invoke(
-                        uriContent
+    val contentResolver = context.contentResolver
+    val cropImage =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { result ->
+            if (result != null) {
+                val uri = ComposeFileProvider.getImageUri(context)
+                val openOutputStream = contentResolver.openOutputStream(uri)
+                val parcelFileDescriptor = contentResolver.openFileDescriptor(result,"r")
+                val fileDescriptor = parcelFileDescriptor?.fileDescriptor
+                val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+                parcelFileDescriptor?.close()
+                image.compress(Bitmap.CompressFormat.JPEG,100,openOutputStream)
+                addPhotoCallback.invoke(
+                    uri
                 )
-            }
-            else -> {
-                val exception = result.error
-                Log.e("AVATAR_TAG", "error: $exception")
+            } else {
+                Log.e("AVATAR_TAG", "error: ")
             }
         }
+    val imageUri = remember {
+        mutableStateOf<Uri?>(null)
     }
+    val setImage = { uri: Uri -> imageUri.value = uri }
+    val takePhoto =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
+            if (it)
+                addPhotoCallback.invoke(imageUri.value)
+            else
+                Log.e("AVATAR_TAG", "error: ")
+        }
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -81,21 +82,25 @@ fun FirstStepCreateAnnouncementForm(
                 TopBarCreateAnnouncement(
                     backArrowShow = true,
                     textTopBar = stringResource(R.string.upload_photo),
-                    )
+                    backArrowCallback = { addPhotoCallback.invoke(null) }
+                )
                 AnimalPhoto(
                     isPhotoBusy = screenIsBusy,
                     photoUri = avatarUri,
                     firstStepReadyCallback = firstStepReadyCallback,
-                    context = context,
-                    cropImage = cropImage
                 )
             }
             false -> {
                 TopBarCreateAnnouncement(
                     backArrowShow = false,
                     textTopBar = stringResource(R.string.upload_photo),
-                    )
-                AddPhotoBtn(context = context, cropImage = cropImage)
+                )
+                AddPhotoBtn(
+                    context = context,
+                    cropImage = cropImage,
+                    setImage = setImage,
+                    takePhoto = takePhoto
+                )
             }
         }
 
@@ -106,7 +111,9 @@ fun FirstStepCreateAnnouncementForm(
 @Composable
 fun AddPhotoBtn(
     context: Context,
-    cropImage: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>,
+    cropImage: ManagedActivityResultLauncher<String, Uri?>,
+    takePhoto: ManagedActivityResultLauncher<Uri, Boolean>,
+    setImage: (Uri) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -117,11 +124,28 @@ fun AddPhotoBtn(
     ) {
         PetShelterBtn(
             modifier = Modifier
-                .width(218.dp)
+                .width(250.dp)
                 .height(56.dp),
-            text = "Добавить фото",
-            image = R.drawable.ic_file_download,
-            clickCallback = { takePhoto(context = context, cropImage = cropImage) }
+            text = "Сделать фото",
+            image = R.drawable.ic_make_photo,
+            clickCallback = {
+                takePhotoFromCamera(
+                    context = context,
+                    takePhoto = takePhoto,
+                    setImage = setImage
+                )
+            }
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+        PetShelterBtn(
+            modifier = Modifier
+                .width(250.dp)
+                .height(56.dp),
+            text = "Загрузить из галереи",
+            image = R.drawable.ic_load_photo,
+            clickCallback = {
+                takePhoto(cropImage = cropImage)
+            }
         )
     }
 }
@@ -131,18 +155,20 @@ fun AnimalPhoto(
     photoUri: Uri?,
     isPhotoBusy: Boolean,
     firstStepReadyCallback: () -> Unit?,
-    context: Context,
-    cropImage: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>
 ) {
-    Box(
+
+    val photoBusy = remember {
+        mutableStateOf(false)
+    }
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                takePhoto(context = context, cropImage = cropImage)
-            }) {
+    ) {
 
         Card(
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .wrapContentSize()
+                .height(maxWidth),
             elevation = 0.dp,
             shape = RoundedCornerShape(0.dp)
         ) {
@@ -150,14 +176,16 @@ fun AnimalPhoto(
                 model = photoUri,
                 contentDescription = "animal_photo",
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
             ) {
                 when (painter.state) {
-                    is AsyncImagePainter.State.Loading -> CircularProgressIndicator()
+                    is AsyncImagePainter.State.Loading -> photoBusy.value = true
                     is AsyncImagePainter.State.Error -> {
                         when (isPhotoBusy) {
-                            true -> CircularProgressIndicator(color = petShelterBlue)
+                            true -> photoBusy.value = true
                             else -> {
+                                photoBusy.value = false
                             }
                         }
                     }
@@ -165,17 +193,28 @@ fun AnimalPhoto(
                         when (isPhotoBusy) {
                             true -> {
                                 SubcomposeAsyncImageContent()
-                                CircularProgressIndicator(
-                                    color = petShelterBlue,
-                                    strokeWidth = 4.dp
-                                )
+                                photoBusy.value = true
                             }
                             else -> {
                                 SubcomposeAsyncImageContent()
+                                photoBusy.value = false
                             }
                         }
                     }
                 }
+            }
+            if (photoBusy.value) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier,
+                        color = petShelterBlue
+                    )
+                }
+
             }
         }
     }
@@ -191,7 +230,7 @@ fun AnimalPhoto(
                 .height(56.dp),
             text = "Указать адрес",
             imageAfter = R.drawable.ic_baseline_arrow_forward_ios_24_btn,
-            clickCallback = {firstStepReadyCallback.invoke()}
+            clickCallback = { firstStepReadyCallback.invoke() }
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -199,28 +238,22 @@ fun AnimalPhoto(
 }
 
 fun takePhoto(
-    context: Context,
-    cropImage: ManagedActivityResultLauncher<CropImageContractOptions, CropImageView.CropResult>
+    cropImage: ManagedActivityResultLauncher<String, Uri?>,
 ) {
-
-    val path = context.filesDir
-    val letDirectory = File(path, "images")
-    letDirectory.mkdirs()
-    if (!letDirectory.exists()) {
-        letDirectory.mkdir()
-    }
-
-    val file = Uri.fromFile(File(letDirectory, "avatar-${UUID.randomUUID()}.png"))
     cropImage.launch(
-        options {
-            setOutputUri(file)
-            setBackgroundColor(Color.Transparent.hashCode())
-            setBorderCornerColor(Color.Transparent.hashCode())
-            setGuidelines(CropImageView.Guidelines.ON_TOUCH)
-            setOutputCompressFormat(Bitmap.CompressFormat.PNG)
-            setAspectRatio(1, 1)
-            setMinCropResultSize(150, 150)
-        }
+        "image/*"
+    )
+}
+
+fun takePhotoFromCamera(
+    context: Context,
+    takePhoto: ManagedActivityResultLauncher<Uri, Boolean>,
+    setImage: (Uri) -> Unit
+) {
+    val uri = ComposeFileProvider.getImageUri(context)
+    setImage.invoke(uri)
+    takePhoto.launch(
+        uri
     )
 }
 
@@ -232,7 +265,7 @@ fun FirstStepCreateAnnouncementFormPreview() {
             screenIsBusy = false,
             avatarUri = null,
             firstStepReadyCallback = {},
-            addPhotoCallback = {}
+            addPhotoCallback = {},
         )
     }
 }

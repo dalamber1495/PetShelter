@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.eql.consts.ui.colors.petShelterBlue
+import com.eql.consts.ui.colors.petShelterWhite
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.main.components.PetShelterBtn
 import com.example.petshelter.common.composables.GoogleMapView
@@ -141,8 +142,9 @@ fun SecondStepCreateAnnouncementForm(
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .background(petShelterBlue)
-                            .wrapContentSize()
+                            .background(petShelterWhite)
+                            .wrapContentSize(),
+                        color = petShelterBlue
                     )
                 }
             }
