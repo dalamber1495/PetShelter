@@ -121,12 +121,15 @@ class CreateAnnouncementTabViewModel @Inject constructor(
 
     fun markerPositionMove(myPosition: Boolean, move: (SecondStepLocateData) -> Unit) {
         viewModelScope.launch {
+            Log.e("TAG", "markerPositionMove: ${userDataRepository.getSecondScreenLocate()}", )
             val locateData = locationLiveData.getCurrentPosition()
             if (!myPosition) {
                 secondStepLocateData.postValue(
                     userDataRepository.getSecondScreenLocate()
                         ?: locateData
                 )
+                move.invoke(userDataRepository.getSecondScreenLocate()
+                    ?: locateData)
             } else {
                 move.invoke(locateData)
             }
