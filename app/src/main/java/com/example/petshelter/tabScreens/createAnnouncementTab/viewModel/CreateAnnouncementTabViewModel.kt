@@ -58,20 +58,27 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     )
 
     fun setTabNavController(openDetailTab: (String)->Unit){
+        defaultValuesSelect()
         this.openDetailTab = openDetailTab
     }
     fun defaultValuesSelect(
     ) {
         screenBusy.postValue(false)
         userDataRepository.getFirstScreenPhotoUri()?.let { it ->
-            Log.e("TAG", "defaultValuesSelect: $it")
             avatarUri.postValue(it)
             firstStepReady.postValue(true)
+            if(userDataRepository.getSecondScreenLocate() == null){
+                viewModelScope.launch{
+                    val locateData = locationLiveData.getCurrentPosition()
+                    secondStepLocateData.postValue(SecondStepLocateData(locateData.latPhoto,locateData.lngPhoto))
+                }
+            }
             userDataRepository.getSecondScreenLocate()?.let { locate ->
                 secondStepLocateData.postValue(locate)
                 secondStepReady.postValue(true)
             }
         }
+        Log.e("STATE", "defaultValuesSelect: ${secondStepReady.value} ${firstStepReady.value}", )
     }
 
     fun setTitleText(title: String) {

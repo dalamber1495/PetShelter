@@ -75,8 +75,8 @@ fun SecondStepCreateAnnouncementForm(
                                 it.status.isGranted -> {
                                     markerPositionCallback.invoke(false){locate->
                                         cameraPositionState.move(
-                                            CameraUpdateFactory.newLatLng(
-                                                LatLng(locate.latPhoto!!, locate.lngPhoto!!)
+                                            CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom((
+                                                    LatLng(locate.latPhoto!!, locate.lngPhoto!!)),18f)
                                             )
                                         )
                                     }
@@ -169,14 +169,11 @@ fun SecondStepCreateAnnouncementForm(
                                         it.status.isGranted -> {
                                             markerPositionCallback.invoke(true) { locate ->
                                                 cameraPositionState.move(
-                                                    CameraUpdateFactory.newLatLng(
-                                                        LatLng(locate.latPhoto!!, locate.lngPhoto!!)
+                                                    CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom((
+                                                            LatLng(locate.latPhoto!!, locate.lngPhoto!!)),18f)
                                                     )
                                                 )
                                             }
-//                                            cameraPositionState.position = CameraPosition.fromLatLngZoom(
-//                                                coordinate, 18f
-//                                            )
                                         }
                                         it.status.shouldShowRationale -> {
                                             permissionStates.launchMultiplePermissionRequest()
