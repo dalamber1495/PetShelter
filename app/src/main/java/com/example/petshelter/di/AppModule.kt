@@ -9,6 +9,7 @@ import com.example.petshelter.data.remote.repository.backendAnimals.PetShelterAp
 import com.example.petshelter.data.remote.useCases.SetAuthorizationHeaderUseCase
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.geo.LocationLiveData
+import com.google.android.gms.location.LocationServices
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -102,5 +103,10 @@ object AppModule {
     fun provideGeocoding(@ApplicationContext context: Context):Geocoder{
         return Geocoder(context, Locale.getDefault())
     }
+
+    @Provides
+    @Singleton
+    fun provideFusedLocation(@ApplicationContext context: Context) = LocationServices.getFusedLocationProviderClient(context)
+
 
 }

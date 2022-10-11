@@ -1,17 +1,20 @@
 package com.example.petshelter.tabScreens.createAnnouncementTab.view.components
 
 import android.Manifest
+import android.app.Activity
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -46,13 +49,25 @@ fun SecondStepCreateAnnouncementForm(
     val lifecycleOwner = LocalLifecycleOwner.current
 //    val coordinate = LatLng(secondStepLocateData.latPhoto!!, secondStepLocateData.lngPhoto!!)
 //    val defaultCameraPosition = CameraPosition.fromLatLngZoom(coordinate, 18f)
-
+    val context = LocalContext.current
     val permissionStates = rememberMultiplePermissionsState(
         listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
     )
+    var requestLocationSetting by remember { mutableStateOf(false) }
+    val enableLocationSettingLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK) {
+            Log.e(TAG, "LocationSettingDialog: YES")
+            requestLocationSetting = false
+        } else {
+            Log.e(TAG, "LocationSettingDialog: NO")
+            requestLocationSetting = true
+        }
+    }
     var isMapLoaded by remember { mutableStateOf(false) }
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
@@ -65,6 +80,8 @@ fun SecondStepCreateAnnouncementForm(
     val permissionDialog = remember {
         mutableStateOf(false)
     }
+
+
     DisposableEffect(key1 = lifecycleOwner, effect = {
         val eventObserver = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -73,13 +90,32 @@ fun SecondStepCreateAnnouncementForm(
                         Manifest.permission.ACCESS_FINE_LOCATION -> {
                             when {
                                 it.status.isGranted -> {
-                                    markerPositionCallback.invoke(false){locate->
-                                        cameraPositionState.move(
-                                            CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom((
-                                                    LatLng(locate.latPhoto!!, locate.lngPhoto!!)),18f)
-                                            )
-                                        )
-                                    }
+                                    LocationSettingDialog(
+                                        context = context,
+                                        onSuccess = {
+                                            markerPositionCallback.invoke(false) { locate ->
+                                                cameraPositionState.move(
+                                                    CameraUpdateFactory.newCameraPosition(
+                                                        CameraPosition.fromLatLngZoom(
+                                                            (
+                                                                    LatLng(
+                                                                        locate.latPhoto!!,
+                                                                        locate.lngPhoto!!
+                                                                    )), 18f
+                                                        )
+                                                    )
+                                                )
+                                            }
+                                        },
+                                        onFailure = { intentSenderRequest ->
+                                            if (!requestLocationSetting) {
+                                                enableLocationSettingLauncher.launch(
+                                                    intentSenderRequest
+                                                )
+                                            }
+                                            requestLocationSetting = true
+                                        }
+                                    )
                                 }
                                 it.status.shouldShowRationale -> {
                                     permissionStates.launchMultiplePermissionRequest()
@@ -167,13 +203,29 @@ fun SecondStepCreateAnnouncementForm(
                                 Manifest.permission.ACCESS_FINE_LOCATION -> {
                                     when {
                                         it.status.isGranted -> {
-                                            markerPositionCallback.invoke(true) { locate ->
-                                                cameraPositionState.move(
-                                                    CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom((
-                                                            LatLng(locate.latPhoto!!, locate.lngPhoto!!)),18f)
+                                            LocationSettingDialog(
+                                                context = context,
+                                                onSuccess = {
+                                                    markerPositionCallback.invoke(true) { locate ->
+                                                        cameraPositionState.move(
+                                                            CameraUpdateFactory.newCameraPosition(
+                                                                CameraPosition.fromLatLngZoom(
+                                                                    (
+                                                                            LatLng(
+                                                                                locate.latPhoto!!,
+                                                                                locate.lngPhoto!!
+                                                                            )), 18f
+                                                                )
+                                                            )
+                                                        )
+                                                    }
+                                                },
+                                                onFailure = { intentSenderRequest ->
+                                                    enableLocationSettingLauncher.launch(
+                                                        intentSenderRequest
                                                     )
-                                                )
-                                            }
+                                                }
+                                            )
                                         }
                                         it.status.shouldShowRationale -> {
                                             permissionStates.launchMultiplePermissionRequest()

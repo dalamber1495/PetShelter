@@ -42,7 +42,7 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     private val secondStepLocateData = MutableLiveData(SecondStepLocateData())
     private val avatarUri = MutableLiveData<Uri?>()
     private val errorMessage = MutableLiveData("")
-    private lateinit var openDetailTab: (String)->Unit
+    private lateinit var openDetailTab: (String) -> Unit
 
     val uiState = FillAnimalInfoUiState(
         firstStep = firstStepReady,
@@ -57,20 +57,26 @@ class CreateAnnouncementTabViewModel @Inject constructor(
         errorMessage = errorMessage
     )
 
-    fun setTabNavController(openDetailTab: (String)->Unit){
-        defaultValuesSelect()
+    fun setTabNavController(openDetailTab: (String) -> Unit) {
         this.openDetailTab = openDetailTab
     }
+
     fun defaultValuesSelect(
     ) {
         screenBusy.postValue(false)
         userDataRepository.getFirstScreenPhotoUri()?.let { it ->
-            avatarUri.postValue(it)
+            if (avatarUri.value == null) avatarUri.postValue(it)
             firstStepReady.postValue(true)
-            if(userDataRepository.getSecondScreenLocate() == null){
-                viewModelScope.launch{
-                    val locateData = locationLiveData.getCurrentPosition()
-                    secondStepLocateData.postValue(SecondStepLocateData(locateData.latPhoto,locateData.lngPhoto))
+            if (userDataRepository.getSecondScreenLocate() == null) {
+                locationLiveData.requestLocationResultCallback { locationResult ->
+                    locationResult.lastLocation?.let {
+                        secondStepLocateData.postValue(
+                            SecondStepLocateData(
+                                it.latitude,
+                                it.longitude
+                            )
+                        )
+                    }
                 }
             }
             userDataRepository.getSecondScreenLocate()?.let { locate ->
@@ -78,7 +84,6 @@ class CreateAnnouncementTabViewModel @Inject constructor(
                 secondStepReady.postValue(true)
             }
         }
-        Log.e("STATE", "defaultValuesSelect: ${secondStepReady.value} ${firstStepReady.value}", )
     }
 
     fun setTitleText(title: String) {
@@ -105,6 +110,8 @@ class CreateAnnouncementTabViewModel @Inject constructor(
 
     fun showPhoto(uri: Uri?) {
         avatarUri.postValue(uri)
+        firstStepReady.postValue(false)
+        secondStepReady.postValue(false)
     }
 
     fun firstStepReady() {
@@ -120,18 +127,20 @@ class CreateAnnouncementTabViewModel @Inject constructor(
     }
 
     fun markerPositionMove(myPosition: Boolean, move: (SecondStepLocateData) -> Unit) {
-        viewModelScope.launch {
-            Log.e("TAG", "markerPositionMove: ${userDataRepository.getSecondScreenLocate()}", )
-            val locateData = locationLiveData.getCurrentPosition()
+        locationLiveData.requestLocationResultCallback { locationResult ->
+            val locate = locationResult.lastLocation
             if (!myPosition) {
                 secondStepLocateData.postValue(
                     userDataRepository.getSecondScreenLocate()
-                        ?: locateData
+                        ?: SecondStepLocateData(locate?.latitude, locate?.longitude)
                 )
-                move.invoke(userDataRepository.getSecondScreenLocate()
-                    ?: locateData)
+                move.invoke(
+                    userDataRepository.getSecondScreenLocate()
+                        ?: SecondStepLocateData(locate?.latitude, locate?.longitude)
+                )
             } else {
-                move.invoke(locateData)
+                        move.invoke(SecondStepLocateData(locate?.latitude, locate?.longitude))
+
             }
         }
     }
@@ -152,20 +161,20 @@ class CreateAnnouncementTabViewModel @Inject constructor(
                 id = "",
                 imageUrl = avatarUri.value,
                 petType = animalSelected.value?.animal!!,
-                title = titleText.value?:"title"
+                title = titleText.value ?: "title"
             )
-        ).onEach {  result ->
-            when(result){
-                is Resource.Success ->{
+        ).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
                     screenBusy.postValue(false)
                     userDataRepository.saveFirstScreenPhotoUri(null)
                     userDataRepository.saveSecondScreenLocate(null)
                     result.data?.id?.let { openDetailTab.invoke(it) }
                 }
-                is Resource.Loading ->{
+                is Resource.Loading -> {
                     screenBusy.postValue(true)
                 }
-                is Resource.Error ->{
+                is Resource.Error -> {
                     screenBusy.postValue(false)
                 }
             }

@@ -46,6 +46,7 @@ fun TabsNavigation(
             route = MainScreenTabRoute.CreateAnnouncementTab.name
         ) {
             composable(route = createAnnouncementLoggedIn) {
+                Log.e("TAG", "TabsNavigation:CREATE ", )
                 val viewModel = hiltViewModel<CreateAnnouncementTabViewModel>()
                 viewModel.setTabNavController(openDetailTab)
                 CreateAnnouncementTabScreen(
@@ -81,6 +82,7 @@ fun TabsNavigation(
 
 
         composable(route = MainScreenTabRoute.ProfileTab.name) {
+            Log.e("TAG", "TabsNavigation: PROFILE", )
             ProfileNavigation()
 
         }
