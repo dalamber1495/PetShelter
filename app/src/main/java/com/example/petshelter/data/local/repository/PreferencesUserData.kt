@@ -1,11 +1,10 @@
-package com.eql.repositories.localUserData
+package com.example.petshelter.data.local.repository
 
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import com.example.petshelter.data.remote.dto.RefreshTokenData
-import com.example.petshelter.domain.model.Announcement
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.tabScreens.announcementTab.model.AnnouncementState
 import com.example.petshelter.tabScreens.createAnnouncementTab.model.SecondStepLocateData

@@ -2,7 +2,7 @@ package com.example.petshelter.di
 
 import android.content.Context
 import android.location.Geocoder
-import com.eql.repositories.backendUserData.authenticator.RemoteServerBackendAuthenticator
+import com.example.petshelter.data.remote.repository.authenticator.RemoteServerBackendAuthenticator
 import com.example.petshelter.common.Constants.BASE_URL
 import com.example.petshelter.data.remote.repository.authenticator.AuthApiService
 import com.example.petshelter.data.remote.repository.backendAnimals.PetShelterApi

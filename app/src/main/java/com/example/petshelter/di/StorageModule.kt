@@ -2,7 +2,7 @@ package com.example.petshelter.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.eql.repositories.localUserData.PreferencesUserData
+import com.example.petshelter.data.local.repository.PreferencesUserData
 import com.example.petshelter.data.remote.repository.backendAnimals.AnnouncementRepositoryImpl
 import com.example.petshelter.data.remote.repository.backendAnimals.PetShelterApi
 import com.example.petshelter.data.remote.repository.firebase.FirebaseBackend
