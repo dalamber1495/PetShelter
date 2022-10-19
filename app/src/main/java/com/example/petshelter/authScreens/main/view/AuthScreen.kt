@@ -1,7 +1,9 @@
 package com.example.petshelter.authScreens.main.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -9,12 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.eql.consts.ui.colors.petShelterBlue
 import com.eql.consts.ui.colors.petShelterWhite
 import com.example.petshelter.R
 import com.example.petshelter.authScreens.common.AuthTabItem
@@ -43,6 +48,15 @@ fun AuthScreen(
 ) {
 
 
+    val context = LocalContext.current.applicationContext
+    uiState.errorMessage.observe(
+        LocalContext.current as LifecycleOwner
+    ) {
+        if (it.isNotEmpty()) {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
+    val screenBusy = uiState.screenBusy.observeAsState(false)
 
     PetShelterTheme {
         Surface(
@@ -101,6 +115,11 @@ fun AuthScreen(
                 }
             }
         }
+        if (screenBusy.value) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = petShelterBlue)
+            }
+        }
     }
 }
 
@@ -123,6 +142,7 @@ fun AuthScreenPreview() {
                 MutableLiveData<UiText>(UiText.EmptyString),
                 MutableLiveData<UiText>(UiText.EmptyString),
                 MutableLiveData<UiText>(UiText.EmptyString),
+                MutableLiveData("")
             ),
             {},
             {},

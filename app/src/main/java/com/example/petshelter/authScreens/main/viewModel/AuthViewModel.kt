@@ -38,6 +38,7 @@ class AuthViewModel @Inject constructor(
     private val validationRegisterPassword = MutableLiveData<UiText>(UiText.EmptyString)
     private val validationName = MutableLiveData<UiText>(UiText.EmptyString)
     private val validationRepeatPassword = MutableLiveData<UiText>(UiText.EmptyString)
+    private val errorMessage = MutableLiveData("")
 
     val uiState = AuthUiState(
         email = email,
@@ -52,7 +53,8 @@ class AuthViewModel @Inject constructor(
         validationName = validationName,
         validationRepeatPassword = validationRepeatPassword,
         validationJoinEmail = validationJoinEmail,
-        validationJoinPassword = validationJoinPassword
+        validationJoinPassword = validationJoinPassword,
+        errorMessage = errorMessage
     )
 
     fun navigateTo(route: AppScreens) {
@@ -64,12 +66,14 @@ class AuthViewModel @Inject constructor(
             authUserUseCase.invoke(name = name.value!!,password = registerPassword.value!!, email = registerEmail.value!!).onEach {
                 when(it){
                     is Resource.Success ->{
+                        screenBusy.postValue(false)
                         userDataRepository.saveLoggedUserTokens(it.data!!)
                         navigateTo(AppScreens.MainAppScreen)
                     }
                     is Resource.Loading ->{screenBusy.postValue(true)}
                     is Resource.Error -> {
-                        //TODO TOAST
+                        screenBusy.postValue(false)
+                        errorMessage.postValue(it.message)
                     }
                 }
             }.launchIn(viewModelScope)
@@ -82,12 +86,14 @@ class AuthViewModel @Inject constructor(
                 authUserUseCase.invoke(it, it1).onEach {
                     when(it){
                         is Resource.Success ->{
+                            screenBusy.postValue(false)
                             userDataRepository.saveLoggedUserTokens(it.data!!)
                             navigateTo(AppScreens.MainAppScreen)
                         }
                         is Resource.Loading ->{screenBusy.postValue(true)}
                         is Resource.Error -> {
-                        //TODO TOAST
+                            screenBusy.postValue(false)
+                            errorMessage.postValue(it.message)
                         }
                     }
                 }.launchIn(viewModelScope)

@@ -17,6 +17,7 @@ data class AuthUiState (
     val validationName:LiveData<UiText>,
     val validationRepeatPassword:LiveData<UiText>,
     val validationJoinEmail:LiveData<UiText>,
-    val validationJoinPassword:LiveData<UiText>
+    val validationJoinPassword:LiveData<UiText>,
+    val errorMessage:LiveData<String>
 
     )

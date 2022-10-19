@@ -1,10 +1,9 @@
-package com.eql.repositories.backendUserData.authenticator
+package com.example.petshelter.data.remote.repository.authenticator
 
 import android.util.Log
 import com.example.petshelter.domain.repository.localRepository.UserDataRepository
 import com.example.petshelter.data.remote.dto.RefreshTokenData
 import com.example.petshelter.data.remote.dto.RefreshTokenRequest
-import com.example.petshelter.data.remote.repository.authenticator.AuthApiService
 import com.example.petshelter.data.remote.useCases.SetAuthorizationHeaderUseCase
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
